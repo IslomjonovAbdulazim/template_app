@@ -1,8 +1,7 @@
 name: template_app
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -11,147 +10,123 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # 🏗️ Core Architecture
-  get: ^4.6.6
-  dio: ^5.4.0
-  retrofit: ^4.0.3
-  json_annotation: ^4.8.1
-
-  # 💾 Storage & Database
-  shared_preferences: ^2.2.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  sqflite: ^2.3.2
-  isar: ^3.1.0+1
-  drift: ^2.14.1
-
-  # 🎨 UI & Styling
-  google_fonts: ^6.1.0
-  flutter_screenutil: ^5.9.0
-  cached_network_image: ^3.3.1
-  shimmer: ^3.0.0
-  flutter_svg: ^2.0.9
-  lottie: ^2.7.0
-  rive: ^0.12.4
-  animations: ^2.0.11
-  flutter_staggered_animations: ^1.1.1
-
-  # 📱 Device Features
-  image_picker: ^1.0.7
-  file_picker: ^6.1.1
-  camera: ^0.10.5+9
-  qr_code_scanner: ^1.0.1
-  qr_flutter: ^4.1.0
-  barcode_widget: ^2.0.3
-  local_auth: ^2.1.7
-  biometric_storage: ^5.0.0
-
-  # 🌐 Network & Connectivity
-  connectivity_plus: ^5.0.2
-  internet_connection_checker: ^1.0.0+1
-  network_info_plus: ^4.1.0
-
-  # 🔔 Notifications
-  firebase_core: ^2.24.2
-  firebase_messaging: ^14.7.10
-  flutter_local_notifications: ^17.0.0
-  awesome_notifications: ^0.8.2
-
-  # 📍 Location & Maps
-  geolocator: ^10.1.0
-  geocoding: ^2.1.1
-  google_maps_flutter: ^2.5.3
-  flutter_map: ^6.1.0
-  latlong2: ^0.8.1
-
-  # 🔐 Authentication & Security
-  google_sign_in: ^6.2.1
-  sign_in_with_apple: ^5.0.0
-  firebase_auth: ^4.16.0
-  crypto: ^3.0.3
-  encrypt: ^5.0.3
-
-  # 🛒 Payment & Commerce
-  razorpay_flutter: ^1.3.6
-  stripe_flutter: ^9.5.0
-  in_app_purchase: ^3.1.13
-  pay: ^1.1.2
-
-  # 📊 Charts & Analytics
-  fl_chart: ^0.66.2
-  syncfusion_flutter_charts: ^24.1.41
-  firebase_analytics: ^10.7.4
-  firebase_crashlytics: ^3.4.9
-
-  # 🌍 Internationalization
-  intl: ^0.19.0
   flutter_localizations:
     sdk: flutter
-  easy_localization: ^3.0.4
 
-  # 📱 Platform Integration
-  url_launcher: ^6.2.4
-  share_plus: ^7.2.2
-  device_info_plus: ^9.1.2
-  package_info_plus: ^4.2.0
-  app_settings: ^5.1.1
-  launch_review: ^3.0.1
+  # 🏗️ Core Architecture - RELIABLE & MAINTAINED
+  get: ^4.6.6                          # GetX State Management + Routing
+  dio: ^5.7.0                          # BEST HTTP CLIENT - actively maintained
+  retrofit: ^4.4.0                     # API generator - works with Dio
+  json_annotation: ^4.9.0              # JSON serialization
 
-  # 🎵 Media & Files
-  video_player: ^2.8.2
-  chewie: ^1.7.5
-  audio_video_progress_bar: ^2.0.1
-  just_audio: ^0.9.36
-  flutter_sound: ^9.2.13
-  record: ^5.0.4
+  # 💾 Storage & Database - PROVEN CHOICES
+  shared_preferences: ^2.3.3           # Simple key-value storage
+  hive_flutter: ^1.1.0                 # Fast NoSQL database
+  path_provider: ^2.1.5                # File system paths
 
-  # 📄 Document Handling
-  syncfusion_flutter_pdfviewer: ^24.1.41
-  printing: ^5.12.0
-  pdf: ^3.10.7
-  excel: ^2.1.0
-  csv: ^5.1.1
+  # 🎨 UI & Styling - CURRENT BEST
+  google_fonts: ^6.2.1                 # Typography
+  flutter_screenutil: ^5.9.3           # Responsive design
+  cached_network_image: ^3.4.1         # Image caching
+  flutter_svg: ^2.0.13                 # SVG support
+  lottie: ^3.1.2                       # Animations (most reliable)
 
-  # 🌐 Web & WebView
-  webview_flutter: ^4.4.4
-  flutter_inappwebview: ^6.0.0
-  html: ^0.15.4
-  web_socket_channel: ^2.4.0
+  # 📱 Device Features - RELIABLE ONLY
+  image_picker: ^1.1.2                 # Camera/gallery access
+  permission_handler: ^11.3.1          # Permissions
+  local_auth: ^2.3.0                   # Biometric authentication
 
-  # 🔧 Utilities
-  permission_handler: ^11.2.0
-  path_provider: ^2.1.2
-  mime: ^1.0.4
-  uuid: ^4.3.3
-  equatable: ^2.0.5
-  freezed_annotation: ^2.4.1
-  logger: ^2.0.2+1
-  pretty_dio_logger: ^1.3.1
+  # 🔐 Local Authentication & Security - ADDED
+  flutter_secure_storage: ^9.2.2       # Secure storage for sensitive data
+  pin_code_fields: ^8.0.1              # Beautiful PIN input fields
+  biometric_storage: ^5.0.1            # Biometric-protected storage
 
-  # 🎯 Specific Features
-  flutter_local_authentication: ^2.0.1
-  flutter_keyboard_visibility: ^6.0.0
-  flutter_native_splash: ^2.3.10
-  flutter_launcher_icons: ^0.13.1
-  workmanager: ^0.5.2
-  background_fetch: ^1.3.0
+  # 🌐 Network & Connectivity - BEST CHOICE
+  connectivity_plus: ^6.1.0            # Network status monitoring
+
+  # 🔔 Notifications - FIREBASE STACK (RELIABLE)
+  firebase_core: ^3.11.0               # Firebase core
+  firebase_messaging: ^15.1.5          # Push notifications
+  flutter_local_notifications: ^18.0.1 # Local notifications
+
+  # 📍 Location & Maps - GOOGLE OFFICIAL
+  geolocator: ^13.0.2                  # Location services
+  google_maps_flutter: ^2.9.0          # Google Maps
+
+  # 🔐 Authentication - FIREBASE + SOCIAL
+  firebase_auth: ^5.3.4                # Firebase authentication
+  google_sign_in: ^6.2.2               # Google OAuth
+  sign_in_with_apple: ^6.1.3           # Apple sign-in
+  crypto: ^3.0.6                       # Encryption utilities
+
+  # 🛒 Payment - PROVEN SOLUTIONS
+  flutter_stripe: ^11.1.0              # OFFICIAL Stripe SDK (actively maintained)
+  razorpay_flutter: ^1.3.7             # Razorpay (updated 2 months ago)
+
+  # 📊 Charts & Analytics - RELIABLE CHOICES
+  fl_chart: ^0.69.2                    # Best free charts library
+  firebase_analytics: ^11.3.5          # Google Analytics
+  firebase_crashlytics: ^4.1.5         # Crash reporting
+
+  # 🌍 Internationalization - LATEST VERSION
+  intl: ^0.19.0                        # Date/number formatting (UPDATED)
+
+  # 📱 Platform Integration - LATEST VERSIONS
+  url_launcher: ^6.3.1            # External URLs (UPDATED)
+  share_plus: ^10.1.2                  # Share functionality
+  device_info_plus: ^11.1.0            # Device information
+  package_info_plus: ^8.1.1            # App information
+
+  # 🎵 Media - BEST CHOICE
+  just_audio: ^0.9.42                  # Most reliable audio player
+
+  # 🌐 Web - OFFICIAL
+  webview_flutter: ^4.10.0             # Official WebView
+
+  # 🔧 Utilities - ESSENTIALS ONLY
+  uuid: ^4.5.1                         # Unique IDs
+  equatable: ^2.0.7                    # Value equality
+  logger: ^2.4.0                       # Logging
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0                # Latest linting rules
 
-  # 🛠️ Code Generation
-  build_runner: ^2.4.7
-  json_serializable: ^6.7.1
-  hive_generator: ^2.0.1
-  retrofit_generator: ^8.0.4
-  freezed: ^2.4.7
-  drift_dev: ^2.14.0
+  # 🛠️ Code Generation - WORKING VERSIONS
+  build_runner: ^2.4.12                # Code generation
+  json_serializable: ^6.8.0            # JSON code generation
+  hive_generator: ^2.0.1               # Hive code generation
+  retrofit_generator: ^9.1.2           # Retrofit code generation
 
 flutter:
-
   uses-material-design: true
+  
+  # 📁 Asset Configuration
+  assets:
+    - assets/images/icons/common/
+    - assets/images/icons/navigation/
+    - assets/images/icons/auth/
+    - assets/images/icons/payment/
+    - assets/images/icons/status/
+    - assets/images/illustrations/onboarding/
+    - assets/images/illustrations/empty_states/
+    - assets/images/illustrations/errors/
+    - assets/images/backgrounds/
+    - assets/animations/lottie/
+    - assets/sounds/
+    - assets/documents/
+    - assets/data/
 
-
+  # 🎨 Font Configuration
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700
