@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import '../../services/storage_service.dart';
 import '../translations/app_translations.dart';
+import '../translations/keys.dart';
 
 /// Controller for managing app language and localization
 /// Handles language switching and locale preferences
@@ -37,12 +38,11 @@ class LanguageController extends GetxController {
   // Language info getters
   String get currentLanguageName =>
       AppTranslations.supportedLanguageNames[_currentLanguageCode.value] ??
-      _currentLanguageCode.value;
+          _currentLanguageCode.value;
 
   String get currentLanguageEnglishName =>
-      AppTranslations.supportedLanguageNamesInEnglish[_currentLanguageCode
-          .value] ??
-      _currentLanguageCode.value;
+      AppTranslations.supportedLanguageNamesInEnglish[_currentLanguageCode.value] ??
+          _currentLanguageCode.value;
 
   String get currentLanguageFlag =>
       AppTranslations.getLanguageFlag(_currentLanguageCode.value);
@@ -103,9 +103,9 @@ class LanguageController extends GetxController {
 
   /// Set language internally
   Future<void> _setLanguageInternal(
-    String languageCode, {
-    bool saveToStorage = true,
-  }) async {
+      String languageCode, {
+        bool saveToStorage = true,
+      }) async {
     if (!AppTranslations.isLanguageSupported(languageCode)) {
       log('Unsupported language code: $languageCode');
       return;
@@ -141,7 +141,7 @@ class LanguageController extends GetxController {
     }
 
     if (!AppTranslations.isLanguageSupported(languageCode)) {
-      _showLanguageError('unsupported_language'.tr);
+      _showLanguageError(TranslationKeys.unknownError.tr);
       return;
     }
 
@@ -165,7 +165,7 @@ class LanguageController extends GetxController {
       log('Language changed successfully to: $languageCode');
     } catch (e) {
       log('Failed to change language: $e');
-      _showLanguageError('language_change_failed'.tr);
+      _showLanguageError(TranslationKeys.unknownError.tr);
     } finally {
       _isChangingLanguage.value = false;
     }
@@ -187,7 +187,7 @@ class LanguageController extends GetxController {
     if (AppTranslations.isLanguageSupported(deviceLocale.languageCode)) {
       await changeLanguage(deviceLocale.languageCode);
     } else {
-      _showLanguageError('system_language_not_supported'.tr);
+      _showLanguageError(TranslationKeys.systemLanguageNotSupported.tr);
     }
   }
 
@@ -195,7 +195,7 @@ class LanguageController extends GetxController {
   LanguageModel? getLanguageModelByCode(String languageCode) {
     try {
       return _availableLanguages.firstWhere(
-        (lang) => lang.code == languageCode,
+            (lang) => lang.code == languageCode,
       );
     } catch (e) {
       return null;
@@ -222,8 +222,8 @@ class LanguageController extends GetxController {
   void _showLanguageChanging() {
     Get.showSnackbar(
       GetSnackBar(
-        title: 'language'.tr,
-        message: 'changing_language'.tr,
+        title: TranslationKeys.language.tr,
+        message: TranslationKeys.changingLanguage.tr,
         icon: const Icon(Icons.language, color: Colors.white),
         backgroundColor: Colors.blue,
         duration: const Duration(seconds: 1),
@@ -236,8 +236,8 @@ class LanguageController extends GetxController {
   void _showLanguageChanged() {
     Get.showSnackbar(
       GetSnackBar(
-        title: 'language'.tr,
-        message: 'language_changed_successfully'.tr,
+        title: TranslationKeys.language.tr,
+        message: TranslationKeys.languageChanged.tr,
         icon: Text(currentLanguageFlag, style: const TextStyle(fontSize: 20)),
         backgroundColor: Colors.green,
         duration: const Duration(seconds: 2),
@@ -250,7 +250,7 @@ class LanguageController extends GetxController {
   void _showLanguageError(String message) {
     Get.showSnackbar(
       GetSnackBar(
-        title: 'error'.tr,
+        title: TranslationKeys.error.tr,
         message: message,
         icon: const Icon(Icons.error, color: Colors.white),
         backgroundColor: Colors.red,
@@ -264,33 +264,34 @@ class LanguageController extends GetxController {
   void showLanguageSelectionDialog() {
     Get.dialog(
       AlertDialog(
-        title: Text('select_language'.tr),
+        title: Text(TranslationKeys.selectLanguage.tr),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children:
-                _availableLanguages.map((language) {
-                  return ListTile(
-                    leading: Text(
-                      language.flag,
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    title: Text(language.name),
-                    subtitle: Text(language.englishName),
-                    trailing:
-                        isCurrentLanguage(language.code)
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                    onTap: () {
-                      Get.back();
-                      changeLanguageByModel(language);
-                    },
-                  );
-                }).toList(),
+            children: _availableLanguages.map((language) {
+              return ListTile(
+                leading: Text(
+                  language.flag,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                title: Text(language.name),
+                subtitle: Text(language.englishName),
+                trailing: isCurrentLanguage(language.code)
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
+                onTap: () {
+                  Get.back();
+                  changeLanguageByModel(language);
+                },
+              );
+            }).toList(),
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr)),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(TranslationKeys.cancel.tr),
+          ),
         ],
       ),
     );
@@ -308,7 +309,7 @@ class LanguageController extends GetxController {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('select_language'.tr, style: Get.textTheme.titleLarge),
+            Text(TranslationKeys.selectLanguage.tr, style: Get.textTheme.titleLarge),
             const SizedBox(height: 16),
             ..._availableLanguages.map((language) {
               return ListTile(
@@ -318,10 +319,9 @@ class LanguageController extends GetxController {
                 ),
                 title: Text(language.name),
                 subtitle: Text(language.englishName),
-                trailing:
-                    isCurrentLanguage(language.code)
-                        ? const Icon(Icons.check, color: Colors.green)
-                        : null,
+                trailing: isCurrentLanguage(language.code)
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
                 onTap: () {
                   Get.back();
                   changeLanguageByModel(language);
@@ -333,7 +333,7 @@ class LanguageController extends GetxController {
               width: double.infinity,
               child: TextButton(
                 onPressed: () => Get.back(),
-                child: Text('cancel'.tr),
+                child: Text(TranslationKeys.cancel.tr),
               ),
             ),
           ],
@@ -367,24 +367,6 @@ class LanguageController extends GetxController {
   TextDirection get textDirection =>
       AppTranslations.getLanguageDirection(_currentLanguageCode.value);
 
-  /// Get date format for current language
-  String get dateFormat =>
-      TranslationUtils.getDateFormat(_currentLanguageCode.value);
-
-  /// Get time format for current language
-  String get timeFormat =>
-      TranslationUtils.getTimeFormat(_currentLanguageCode.value);
-
-  /// Format number for current language
-  String formatNumber(double number) {
-    return TranslationUtils.formatNumber(number, _currentLanguageCode.value);
-  }
-
-  /// Format currency for current language
-  String formatCurrency(double amount) {
-    return TranslationUtils.formatCurrency(amount, _currentLanguageCode.value);
-  }
-
   /// Get all language codes with names
   Map<String, String> get languageCodeToName {
     final Map<String, String> result = {};
@@ -412,8 +394,8 @@ class LanguageController extends GetxController {
 
         Get.showSnackbar(
           GetSnackBar(
-            title: 'language'.tr,
-            message: 'reset_to_system_language'.tr,
+            title: 'Language',
+            message: 'Reset to system language',
             duration: const Duration(seconds: 2),
             snackPosition: SnackPosition.BOTTOM,
           ),
@@ -423,8 +405,8 @@ class LanguageController extends GetxController {
 
         Get.showSnackbar(
           GetSnackBar(
-            title: 'language'.tr,
-            message: 'reset_to_default_language'.tr,
+            title: 'Language',
+            message: 'Reset to default language',
             duration: const Duration(seconds: 2),
             snackPosition: SnackPosition.BOTTOM,
           ),
@@ -432,7 +414,7 @@ class LanguageController extends GetxController {
       }
     } catch (e) {
       log('Failed to reset language: $e');
-      _showLanguageError('failed_to_reset_language'.tr);
+      _showLanguageError('Failed to reset language');
     }
   }
 

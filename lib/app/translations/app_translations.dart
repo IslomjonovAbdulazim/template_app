@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'keys.dart';
 import 'en_us.dart';
 import 'ru_ru.dart';
 import 'uz_uz.dart';
@@ -209,48 +210,6 @@ class AppTranslations extends Translations {
     // Set up GetX translations
     Get.addTranslations(AppTranslations().keys);
   }
-
-  /// Get pluralized translation
-  static String plural(String key, int count, {Map<String, String>? params}) {
-    // Basic pluralization logic for supported languages
-    String pluralKey = key;
-
-    switch (currentLanguageCode) {
-      case 'en':
-        pluralKey = count == 1 ? '${key}_singular' : '${key}_plural';
-        break;
-      case 'ru':
-      // Russian has complex pluralization rules
-        if (count % 10 == 1 && count % 100 != 11) {
-          pluralKey = '${key}_singular';
-        } else if ([2, 3, 4].contains(count % 10) && ![12, 13, 14].contains(count % 100)) {
-          pluralKey = '${key}_few';
-        } else {
-          pluralKey = '${key}_many';
-        }
-        break;
-      case 'uz':
-      // Uzbek doesn't have plural forms for nouns in the same way
-        pluralKey = key;
-        break;
-    }
-
-    // Try to get the pluralized version, fallback to original key
-    String translation = pluralKey.tr;
-    if (translation == pluralKey) {
-      translation = key.tr;
-    }
-
-    // Replace count parameter
-    final allParams = <String, String>{'count': count.toString()};
-    if (params != null) allParams.addAll(params);
-
-    allParams.forEach((paramKey, paramValue) {
-      translation = translation.replaceAll('@$paramKey', paramValue);
-    });
-
-    return translation;
-  }
 }
 
 /// Language model for UI display
@@ -284,80 +243,28 @@ class LanguageModel {
   int get hashCode => code.hashCode;
 }
 
-/// Translation utilities
-class TranslationUtils {
-  TranslationUtils._();
+/// Translation helper class to avoid extension conflicts
+class T {
+  T._();
 
-  /// Get localized date format
-  static String getDateFormat(String languageCode) {
-    switch (languageCode) {
-      case 'en':
-        return 'MM/dd/yyyy';
-      case 'ru':
-        return 'dd.MM.yyyy';
-      case 'uz':
-        return 'dd.MM.yyyy';
-      default:
-        return 'dd/MM/yyyy';
-    }
+  /// Get translation for a key
+  static String get(String key, {Map<String, String>? params}) {
+    return AppTranslations.translate(key, params: params);
   }
 
-  /// Get localized time format
-  static String getTimeFormat(String languageCode) {
-    switch (languageCode) {
-      case 'en':
-        return 'h:mm a'; // 12-hour format
-      case 'ru':
-      case 'uz':
-        return 'HH:mm'; // 24-hour format
-      default:
-        return 'HH:mm';
-    }
-  }
-
-  /// Get localized number format
-  static String formatNumber(double number, String languageCode) {
-    switch (languageCode) {
-      case 'en':
-        return number.toStringAsFixed(2).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-              (Match m) => '${m[1]},',
-        );
-      case 'ru':
-      case 'uz':
-        return number.toStringAsFixed(2).replaceAll('.', ',').replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-              (Match m) => '${m[1]} ',
-        );
-      default:
-        return number.toString();
-    }
-  }
-
-  /// Get localized currency format
-  static String formatCurrency(double amount, String languageCode) {
-    switch (languageCode) {
-      case 'en':
-        return '\$${formatNumber(amount, languageCode)}';
-      case 'ru':
-        return '${formatNumber(amount, languageCode)} ₽';
-      case 'uz':
-        return '${formatNumber(amount, languageCode)} so\'m';
-      default:
-        return formatNumber(amount, languageCode);
-    }
+  /// Get translation using the built-in GetX .tr
+  static String tr(String key) {
+    return key.tr;
   }
 }
 
-/// Extension methods for easy translation access
-extension StringTranslation on String {
-  /// Get translation for this string
-  String get t => AppTranslations.translate(this);
-
-  /// Get translation with parameters
-  String tParams(Map<String, String> params) => AppTranslations.translate(this, params: params);
-
-  /// Get pluralized translation
-  String tPlural(int count, {Map<String, String>? params}) => AppTranslations.plural(this, count, params: params);
-}
-
+/// Recommended usage patterns:
+///
+/// Option 1: Use GetX built-in .tr (recommended)
+/// Text(TranslationKeys.login.tr)
+///
+/// Option 2: Use our helper class T
+/// Text(T.get(TranslationKeys.login))
+///
+/// Option 3: Use AppTranslations.translate directly
+/// Text(AppTranslations.translate(TranslationKeys.login))
