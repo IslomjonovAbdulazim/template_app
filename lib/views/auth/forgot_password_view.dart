@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/controllers/auth_controller.dart';
 import '../../app/controllers/connectivity_controller.dart';
+import '../../app/translations/keys.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../utils/validators.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
 
-/// Beautiful forgot password screen with animations
+/// Enhanced forgot password screen with proper translations
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
 
@@ -189,7 +190,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> with TickerProv
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  _emailSent ? 'check_your_email'.tr : 'forgot_password'.tr,
+                  _emailSent ? 'check_your_email'.tr : TranslationKeys.forgotPassword.tr,
                   style: AppTextStyles.titleLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.grey900,
@@ -360,7 +361,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> with TickerProv
                 child: CustomTextField(
                   controller: _emailController,
                   focusNode: _emailFocusNode,
-                  label: 'email'.tr,
+                  label: TranslationKeys.email.tr,
                   hint: 'enter_email_for_reset'.tr,
                   prefixIcon: const Icon(Icons.email_outlined),
                   keyboardType: TextInputType.emailAddress,
@@ -675,7 +676,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> with TickerProv
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          'sign_in'.tr,
+                          TranslationKeys.signIn.tr,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -735,10 +736,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> with TickerProv
   }
 }
 
-// Additional translation keys
-extension ForgotPasswordTranslations on String {
+// Translation extension for forgot password specific terms
+extension ForgotPasswordTranslationExtensions on String {
   String get tr {
-    final translations = {
+    final Map<String, String> forgotPasswordTranslations = {
       'check_your_email': 'Check Your Email',
       'reset_password_title': 'Forgot Password?',
       'reset_password_description': 'Don\'t worry! Enter your email address and we\'ll send you a link to reset your password.',
@@ -757,7 +758,9 @@ extension ForgotPasswordTranslations on String {
       'internet_required_for_resend': 'Internet connection required to resend email',
       'email_resent': 'Email Resent',
       'check_inbox_again': 'Please check your inbox again',
+      'contact_support': 'Contact Support',
     };
-    return translations[this] ?? this;
+
+    return forgotPasswordTranslations[this] ?? this;
   }
 }

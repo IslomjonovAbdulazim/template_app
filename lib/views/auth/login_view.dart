@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/controllers/auth_controller.dart';
 import '../../app/controllers/connectivity_controller.dart';
+import '../../app/translations/keys.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../constants/app_images.dart';
@@ -11,7 +12,7 @@ import '../../widgets/common/custom_text_field.dart';
 import '../../widgets/common/loading_widget.dart';
 import '../../widgets/common/social_login_button.dart';
 
-/// Beautiful login screen with modern design and animations
+/// Enhanced login screen with proper translations and error handling
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -230,7 +231,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                   ],
                 ).createShader(bounds),
                 child: Text(
-                  'welcome_back'.tr,
+                  TranslationKeys.welcomeBack.tr,
                   style: AppTextStyles.displaySmall.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -288,7 +289,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                 _buildAnimatedTextField(
                   controller: _emailController,
                   focusNode: _emailFocusNode,
-                  label: 'email'.tr,
+                  label: TranslationKeys.email.tr,
                   hint: 'enter_email'.tr,
                   prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
@@ -302,12 +303,12 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                 _buildAnimatedTextField(
                   controller: _passwordController,
                   focusNode: _passwordFocusNode,
-                  label: 'password'.tr,
+                  label: TranslationKeys.password.tr,
                   hint: 'enter_password'.tr,
                   prefixIcon: Icons.lock_outline,
                   isPassword: true,
                   textInputAction: TextInputAction.done,
-                  validator: (value) => Validators.required(value, 'password'.tr),
+                  validator: (value) => Validators.required(value, TranslationKeys.password.tr),
                   onSubmitted: (_) => _handleLogin(),
                 ),
                 const SizedBox(height: 20),
@@ -339,7 +340,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'remember_me'.tr,
+                            TranslationKeys.rememberMe.tr,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.grey700,
                               fontWeight: FontWeight.w500,
@@ -359,7 +360,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'forgot_password'.tr,
+                        TranslationKeys.forgotPassword.tr,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -373,7 +374,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
 
                 // Login Button with Animation
                 Obx(() => _buildAnimatedButton(
-                  text: 'login'.tr,
+                  text: TranslationKeys.login.tr,
                   isLoading: _authController.isLoading,
                   onPressed: _authController.isLoading ? null : _handleLogin,
                 )),
@@ -669,7 +670,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                         child: GestureDetector(
                           onTap: () => Get.toNamed('/terms'),
                           child: Text(
-                            'terms_of_service'.tr,
+                            TranslationKeys.termsOfService.tr,
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.primary,
                               fontWeight: FontWeight.w600,
@@ -678,12 +679,12 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      TextSpan(text: ' ${'and'.tr} '),
+                      TextSpan(text: ' ${TranslationKeys.and.tr} '),
                       WidgetSpan(
                         child: GestureDetector(
                           onTap: () => Get.toNamed('/privacy'),
                           child: Text(
-                            'privacy_policy'.tr,
+                            TranslationKeys.privacyPolicy.tr,
                             style: AppTextStyles.bodySmall.copyWith(
                               color: AppColors.primary,
                               fontWeight: FontWeight.w600,
@@ -710,7 +711,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'dont_have_account'.tr,
+                      TranslationKeys.dontHaveAccount.tr,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.grey700,
                       ),
@@ -725,7 +726,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          'sign_up'.tr,
+                          TranslationKeys.signUp.tr,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -795,21 +796,19 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
   }
 }
 
-// Additional translation keys
-extension LoginTranslations on String {
+// Additional translation keys extension for login screen specific terms
+extension LoginTranslationExtensions on String {
   String get tr {
-    final translations = {
-      'welcome_back': 'Welcome Back!',
+    final Map<String, String> loginTranslations = {
       'sign_in_to_continue': 'Sign in to your account to continue your journey',
       'enter_email': 'Enter your email address',
       'enter_password': 'Enter your password',
       'or_continue_with': 'Or continue with',
       'by_continuing_agree': 'By continuing, you agree to our',
-      'and': 'and',
-      'dont_have_account': "Don't have an account?",
       'login_requires_internet': 'Login requires an internet connection',
       'social_login_requires_internet': 'Social login requires an internet connection',
     };
-    return translations[this] ?? this;
+
+    return loginTranslations[this] ?? this;
   }
 }

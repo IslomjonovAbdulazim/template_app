@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/controllers/auth_controller.dart';
 import '../../app/controllers/connectivity_controller.dart';
+import '../../app/translations/keys.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import '../../utils/validators.dart';
@@ -9,7 +10,7 @@ import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
 import '../../widgets/common/social_login_button.dart';
 
-/// Beautiful registration screen with step-by-step design and animations
+/// Enhanced registration screen with step-by-step design and proper translations
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
@@ -50,18 +51,18 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
 
   final List<StepInfo> _steps = [
     StepInfo(
-      title: 'Personal Information',
-      subtitle: 'Tell us about yourself',
+      title: 'personal_information'.tr,
+      subtitle: 'tell_us_about_yourself'.tr,
       icon: Icons.person_outline,
     ),
     StepInfo(
-      title: 'Account Details',
-      subtitle: 'Create your secure account',
+      title: 'account_details'.tr,
+      subtitle: 'create_secure_account'.tr,
       icon: Icons.security_outlined,
     ),
     StepInfo(
-      title: 'Terms & Verification',
-      subtitle: 'Almost done! Final step',
+      title: 'terms_verification'.tr,
+      subtitle: 'almost_done_final_step'.tr,
       icon: Icons.verified_user_outlined,
     ),
   ];
@@ -242,7 +243,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'create_account'.tr,
+                            TranslationKeys.createAccount.tr,
                             style: AppTextStyles.titleLarge.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppColors.grey900,
@@ -452,12 +453,12 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _firstNameController,
           focusNode: _firstNameFocusNode,
-          label: 'first_name'.tr,
+          label: TranslationKeys.firstName.tr,
           hint: 'enter_first_name'.tr,
           icon: Icons.person_outline,
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,
-          validator: (value) => Validators.name(value, 'first_name'.tr),
+          validator: (value) => Validators.name(value, TranslationKeys.firstName.tr),
           onSubmitted: (_) => _lastNameFocusNode.requestFocus(),
         ),
         const SizedBox(height: 20),
@@ -466,12 +467,12 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _lastNameController,
           focusNode: _lastNameFocusNode,
-          label: 'last_name'.tr,
+          label: TranslationKeys.lastName.tr,
           hint: 'enter_last_name'.tr,
           icon: Icons.person_outline,
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
-          validator: (value) => Validators.name(value, 'last_name'.tr),
+          validator: (value) => Validators.name(value, TranslationKeys.lastName.tr),
           onSubmitted: (_) => _nextStep(),
         ),
       ],
@@ -485,7 +486,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _emailController,
           focusNode: _emailFocusNode,
-          label: 'email'.tr,
+          label: TranslationKeys.email.tr,
           hint: 'enter_email'.tr,
           icon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
@@ -499,7 +500,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _phoneController,
           focusNode: _phoneFocusNode,
-          label: 'phone_number'.tr,
+          label: TranslationKeys.phoneNumber.tr,
           hint: 'enter_phone_number'.tr,
           icon: Icons.phone_outlined,
           keyboardType: TextInputType.phone,
@@ -513,7 +514,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _passwordController,
           focusNode: _passwordFocusNode,
-          label: 'password'.tr,
+          label: TranslationKeys.password.tr,
           hint: 'enter_password'.tr,
           icon: Icons.lock_outline,
           isPassword: true,
@@ -527,7 +528,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         _buildAnimatedField(
           controller: _confirmPasswordController,
           focusNode: _confirmPasswordFocusNode,
-          label: 'confirm_password'.tr,
+          label: TranslationKeys.confirmPassword.tr,
           hint: 'confirm_your_password'.tr,
           icon: Icons.lock_outline,
           isPassword: true,
@@ -633,13 +634,12 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                               height: 1.5,
                             ),
                             children: [
-                              TextSpan(text: 'i_agree_to'.tr),
                               TextSpan(text: ' '),
                               WidgetSpan(
                                 child: GestureDetector(
                                   onTap: () => Get.toNamed('/terms'),
                                   child: Text(
-                                    'terms_of_service'.tr,
+                                    TranslationKeys.termsOfService.tr,
                                     style: AppTextStyles.bodySmall.copyWith(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w600,
@@ -648,12 +648,12 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                                   ),
                                 ),
                               ),
-                              TextSpan(text: ' ${'and'.tr} '),
+                              TextSpan(text: ' ${TranslationKeys.and.tr} '),
                               WidgetSpan(
                                 child: GestureDetector(
                                   onTap: () => Get.toNamed('/privacy'),
                                   child: Text(
-                                    'privacy_policy'.tr,
+                                    TranslationKeys.privacyPolicy.tr,
                                     style: AppTextStyles.bodySmall.copyWith(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.w600,
@@ -843,7 +843,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'already_have_account'.tr,
+                  TranslationKeys.alreadyHaveAccount.tr,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.grey700,
                   ),
@@ -858,7 +858,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'sign_in'.tr,
+                      TranslationKeys.signIn.tr,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -916,7 +916,7 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              isLastStep ? 'create_account'.tr : 'next'.tr,
+              isLastStep ? TranslationKeys.createAccount.tr : 'next'.tr,
               style: AppTextStyles.buttonLarge.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -995,6 +995,12 @@ class _RegisterViewState extends State<RegisterView> with TickerProviderStateMix
         lastName: _lastNameController.text.trim(),
         phone: _phoneController.text.trim(),
       );
+
+      // Navigate to email verification
+      Get.toNamed('/verify-email', arguments: {
+        'email': _emailController.text.trim(),
+        'type': 'registration',
+      });
     }, customMessage: 'registration_requires_internet'.tr);
   }
 
@@ -1073,11 +1079,16 @@ class StepInfo {
   });
 }
 
-// Additional translation keys
-extension RegisterTranslations on String {
+// Translation extension for register specific terms
+extension RegisterTranslationExtensions on String {
   String get tr {
-    final translations = {
-      'create_account': 'Create Account',
+    final Map<String, String> registerTranslations = {
+      'personal_information': 'Personal Information',
+      'tell_us_about_yourself': 'Tell us about yourself',
+      'account_details': 'Account Details',
+      'create_secure_account': 'Create your secure account',
+      'terms_verification': 'Terms & Verification',
+      'almost_done_final_step': 'Almost done! Final step',
       'step_progress': 'Step {current} of {total}',
       'enter_first_name': 'Enter your first name',
       'enter_last_name': 'Enter your last name',
@@ -1086,16 +1097,17 @@ extension RegisterTranslations on String {
       'password_strength': 'Password Strength',
       'almost_done': 'Almost Done!',
       'review_and_confirm': 'Please review your information and accept our terms',
-      'i_agree_to': 'I agree to the',
       'or_register_with': 'Or register with',
-      'already_have_account': 'Already have an account?',
       'weak': 'Weak',
       'fair': 'Fair',
       'good': 'Good',
       'strong': 'Strong',
+      'previous': 'Previous',
+      'next': 'Next',
       'registration_requires_internet': 'Registration requires an internet connection',
       'social_registration_requires_internet': 'Social registration requires an internet connection',
     };
-    return translations[this] ?? this;
+
+    return registerTranslations[this] ?? this;
   }
 }
