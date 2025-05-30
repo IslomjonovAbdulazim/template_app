@@ -88,6 +88,8 @@ class _TermsOfServiceViewState extends State<TermsOfServiceView>
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
+            width: 24,
+            height: 24,
             child: CircularProgressIndicator(
               value: _scrollProgress,
               strokeWidth: 3,
@@ -171,7 +173,7 @@ class _TermsOfServiceViewState extends State<TermsOfServiceView>
                       ),
                     ),
                     Text(
-                      'effective_date'.tr,
+                      TermsKeys.effectiveDate.tr,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white.withOpacity(0.9),
                       ),
@@ -183,7 +185,7 @@ class _TermsOfServiceViewState extends State<TermsOfServiceView>
           ),
           const SizedBox(height: 16),
           Text(
-            'terms_introduction'.tr,
+            TermsKeys.termsIntroduction.tr,
             style: AppTextStyles.bodyMedium.copyWith(
               color: Colors.white.withOpacity(0.9),
               height: 1.5,
@@ -212,228 +214,213 @@ class _TermsOfServiceViewState extends State<TermsOfServiceView>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSection(
-            title: '1. ${\'acceptance_of_terms\'.tr}',
-            content: 'acceptance_of_terms_content'.tr,
+            title: '1. ${TermsKeys.acceptanceOfTerms.tr}',
+            content: TermsKeys.acceptanceOfTermsContent.tr,
             icon: Icons.check_circle_outline,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '2. ${\'description_of_service\'.tr}',
-            content: 'description_of_service_content'.tr,
+            title: '2. ${TermsKeys.descriptionOfService.tr}',
+            content: TermsKeys.descriptionOfServiceContent.tr,
             icon: Icons.miscellaneous_services_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '3. ${\'user_accounts\'.tr}',
-            content: 'user_accounts_content'.tr,
+            title: '3. ${TermsKeys.userAccounts.tr}',
+            content: TermsKeys.userAccountsContent.tr,
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '4. ${\'user_conduct\'.tr}',
-            content: 'user_conduct_content'.tr,
+            title: '4. ${TermsKeys.userConduct.tr}',
+            content: TermsKeys.userConductContent.tr,
             icon: Icons.security_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '5. ${\'privacy_policy\'.tr}',
-            content: 'privacy_policy_section_content'.tr,
+            title: '5. ${TermsKeys.privacyPolicy.tr}',
+            content: TermsKeys.privacyPolicySectionContent.tr,
             icon: Icons.privacy_tip_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '6. ${\'intellectual_property\'.tr}',
-            content: 'intellectual_property_content'.tr,
+            title: '6. ${TermsKeys.intellectualProperty.tr}',
+            content: TermsKeys.intellectualPropertyContent.tr,
             icon: Icons.copyright_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '7. ${\'disclaimers\'.tr}',
-            content: 'disclaimers_content'.tr,
+            title: '7. ${TermsKeys.disclaimers.tr}',
+            content: TermsKeys.disclaimersContent.tr,
             icon: Icons.warning_amber_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '8. ${\'limitation_of_liability\'.tr}',
-            content: 'limitation_of_liability_content'.tr,
+            title: '8. ${TermsKeys.limitationOfLiability.tr}',
+            content: TermsKeys.limitationOfLiabilityContent.tr,
             icon: Icons.shield_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '9. ${\'termination\'.tr}',
-            content: 'termination_content'.tr,
+            title: '9. ${TermsKeys.termination.tr}',
+            content: TermsKeys.terminationContent.tr,
             icon: Icons.exit_to_app_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '10. ${\'governing_law\'.tr}',
-            content: 'governing_law_content'.tr,
+            title: '10. ${TermsKeys.governingLaw.tr}',
+            content: TermsKeys.governingLawContent.tr,
             icon: Icons.balance_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '11. ${\'changes_to_terms\'.tr}',
-            content: 'changes_to_terms_content'.tr,
+            title: '11. ${TermsKeys.changesToTerms.tr}',
+            content: TermsKeys.changesToTermsContent.tr,
             icon: Icons.update_outlined,
           ),
           const SizedBox(height: 24),
 
           _buildSection(
-            title: '12. ${\'contact_information\'.tr}',
-            content: 'contact_information_content'.tr,
+            title: '12. ${TermsKeys.contactInformation.tr}',
+            content: TermsKeys.contactInformationContent.tr,
             icon: Icons.contact_support_outlined,
           ),
         ],
       ),
-    );}
+    );
+  }
 
-    Widget _buildSection({
+  Widget _buildSection({
     required String title,
     required String content,
     required IconData icon,
-    }) {
+  }) {
     return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Row(
-    children: [
-    Container(
-    padding: const EdgeInsets.all(8),
-    decoration: BoxDecoration(
-    color: AppColors.primaryShade,
-    borderRadius: BorderRadius.circular(8),
-    ),
-    child: Icon(
-    icon,
-    color: AppColors.primary,
-    size: 20,
-    ),
-    ),
-    const SizedBox(width: 12),
-    Expanded(
-    child: Text(
-    title,
-    style: AppTextStyles.titleMedium.copyWith(
-    fontWeight: FontWeight.bold,
-    color: AppColors.grey900,
-    ),
-    ),
-    ),
-    ],
-    ),
-    const SizedBox(height: 12),
-    Padding(
-    padding: const EdgeInsets.only(left: 40),
-    child: Text(
-    content,
-    style: AppTextStyles.bodyMedium.copyWith(
-    color: AppColors.grey700,
-    height: 1.6,
-    ),
-    ),
-    ),
-    ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryShade,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: AppTextStyles.titleMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.grey900,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.only(left: 40),
+          child: Text(
+            content,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.grey700,
+              height: 1.6,
+            ),
+          ),
+        ),
+      ],
     );
-    }
+  }
 
-    Widget _buildLastUpdated() {
+  Widget _buildLastUpdated() {
     return Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-    color: AppColors.infoShade,
-    borderRadius: BorderRadius.circular(16),
-    border: Border.all(color: AppColors.info.withOpacity(0.2)),
-    ),
-    child: Row(
-    children: [
-    Icon(
-    Icons.info_outline,
-    color: AppColors.info,
-    size: 24,
-    ),
-    const SizedBox(width: 12),
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Text(
-    'last_updated'.tr,
-    style: AppTextStyles.titleSmall.copyWith(
-    fontWeight: FontWeight.w600,
-    color: AppColors.info,
-    ),
-    ),
-    Text(
-    'last_updated_date'.tr,
-    style: AppTextStyles.bodySmall.copyWith(
-    color: AppColors.grey700,
-    ),
-    ),
-    ],
-    ),
-    ),
-    ],
-    ),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.infoShade,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.info.withOpacity(0.2)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: AppColors.info,
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  TermsKeys.lastUpdated.tr,
+                  style: AppTextStyles.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.info,
+                  ),
+                ),
+                Text(
+                  TermsKeys.lastUpdatedDate.tr,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.grey700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
-    }
-    }
+  }
+}
 
-// Translation extension for terms of service specific content
-    extension TermsOfServiceTranslationExtensions on String {
-    String get tr {
-    final Map<String, String> termsTranslations = {
-    'effective_date': 'Effective Date: January 1, 2025',
-    'terms_introduction': 'Please read these Terms of Service carefully before using our application. By accessing or using our service, you agree to be bound by these terms.',
+/// Terms of Service specific translation keys
+class TermsKeys {
+  TermsKeys._();
 
-    'acceptance_of_terms': 'Acceptance of Terms',
-    'acceptance_of_terms_content': 'By downloading, installing, or using this application, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.',
-
-    'description_of_service': 'Description of Service',
-    'description_of_service_content': 'Our application provides digital services including but not limited to user authentication, data management, and interactive features. We reserve the right to modify, suspend, or discontinue any aspect of the service at any time.',
-
-    'user_accounts': 'User Accounts',
-    'user_accounts_content': 'You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must provide accurate and complete information when creating your account and keep your information updated.',
-
-    'user_conduct': 'User Conduct',
-    'user_conduct_content': 'You agree not to use the service for any unlawful purpose or in any way that could damage, disable, overburden, or impair our servers or networks. You must not attempt to gain unauthorized access to any part of the service.',
-
-    'privacy_policy_section_content': 'Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information when you use our service. By using our service, you also agree to our Privacy Policy.',
-
-    'intellectual_property': 'Intellectual Property',
-    'intellectual_property_content': 'The service and its original content, features, and functionality are owned by us and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.',
-
-    'disclaimers': 'Disclaimers',
-    'disclaimers_content': 'The service is provided on an "as is" and "as available" basis. We make no warranties, express or implied, regarding the service, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.',
-
-    'limitation_of_liability': 'Limitation of Liability',
-    'limitation_of_liability_content': 'In no event shall we be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or use, arising out of or relating to your use of the service.',
-
-    'termination': 'Termination',
-    'termination_content': 'We may terminate or suspend your account and access to the service immediately, without prior notice, for any breach of these Terms of Service. Upon termination, your right to use the service will cease immediately.',
-
-    'governing_law': 'Governing Law',
-    'governing_law_content': 'These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which our company is incorporated, without regard to its conflict of law provisions.',
-
-    'changes_to_terms': 'Changes to Terms',
-    'changes_to_terms_content': 'We reserve the right to modify these Terms of Service at any time. We will notify users of any material changes via email or through the application. Your continued use of the service after such modifications constitutes acceptance of the updated terms.',
-
-    'contact_information': 'Contact Information',
-    'contact_information_content': 'If you have any questions about these Terms of Service, please contact us at support@yourapp.com or through the contact information provided in the application.',
-
-    'last_updated': 'Last Updated',
-    'last_updated_date': 'These terms were last updated on January 1, 2025. We may update these terms from time to time to reflect changes in our practices or applicable law.',
-    };
-
-    return termsTranslations[this] ?? this;
-    }
-    }
+  static const String effectiveDate = 'terms_effective_date';
+  static const String termsIntroduction = 'terms_introduction';
+  static const String acceptanceOfTerms = 'terms_acceptance';
+  static const String acceptanceOfTermsContent = 'terms_acceptance_content';
+  static const String descriptionOfService = 'terms_service_description';
+  static const String descriptionOfServiceContent = 'terms_service_description_content';
+  static const String userAccounts = 'terms_user_accounts';
+  static const String userAccountsContent = 'terms_user_accounts_content';
+  static const String userConduct = 'terms_user_conduct';
+  static const String userConductContent = 'terms_user_conduct_content';
+  static const String privacyPolicy = 'terms_privacy_policy';
+  static const String privacyPolicySectionContent = 'terms_privacy_policy_content';
+  static const String intellectualProperty = 'terms_intellectual_property';
+  static const String intellectualPropertyContent = 'terms_intellectual_property_content';
+  static const String disclaimers = 'terms_disclaimers';
+  static const String disclaimersContent = 'terms_disclaimers_content';
+  static const String limitationOfLiability = 'terms_limitation_liability';
+  static const String limitationOfLiabilityContent = 'terms_limitation_liability_content';
+  static const String termination = 'terms_termination';
+  static const String terminationContent = 'terms_termination_content';
+  static const String governingLaw = 'terms_governing_law';
+  static const String governingLawContent = 'terms_governing_law_content';
+  static const String changesToTerms = 'terms_changes';
+  static const String changesToTermsContent = 'terms_changes_content';
+  static const String contactInformation = 'terms_contact_info';
+  static const String contactInformationContent = 'terms_contact_info_content';
+  static const String lastUpdated = 'terms_last_updated';
+  static const String lastUpdatedDate = 'terms_last_updated_date';
+}

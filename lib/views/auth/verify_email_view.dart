@@ -220,7 +220,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  _isEmailVerified ? 'email_verified_success'.tr : 'verify_email'.tr,
+                  _isEmailVerified ? EmailVerifyKeys.emailVerifiedSuccess.tr : EmailVerifyKeys.verifyEmail.tr,
                   style: AppTextStyles.titleLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.grey900,
@@ -236,615 +236,611 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
 
   Widget _buildIllustration() {
     return AnimatedBuilder(
-        animation: Listenable.merge([_fadeAnimation, _pulseAnimation]),
-        builder: (context, child) {
-          return FadeTransition(
-              opacity: _fadeAnimation,
-              child: Transform.scale(
-              scale: _isEmailVerified ? 1.0 : _pulseAnimation.value,
-              child: Container(
+      animation: Listenable.merge([_fadeAnimation, _pulseAnimation]),
+      builder: (context, child) {
+        return FadeTransition(
+          opacity: _fadeAnimation,
+          child: Transform.scale(
+            scale: _isEmailVerified ? 1.0 : _pulseAnimation.value,
+            child: Container(
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-              gradient: _isEmailVerified ? AppColors.successGradient : AppColors.primaryGradient,
-              shape: BoxShape.circle,
-              boxShadow: [
-              BoxShadow(
-              color: (_isEmailVerified ? AppColors.success : AppColors.primary).withOpacity(0.3),
-          blurRadius: 30,
-          offset: const Offset(0, 15),
+                gradient: _isEmailVerified ? AppColors.successGradient : AppColors.primaryGradient,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: (_isEmailVerified ? AppColors.success : AppColors.primary).withOpacity(0.3),
+                    blurRadius: 30,
+                    offset: const Offset(0, 15),
+                  ),
+                  BoxShadow(
+                    color: (_isEmailVerified ? AppColors.success : AppColors.primary).withOpacity(0.1),
+                    blurRadius: 60,
+                    offset: const Offset(0, 30),
+                  ),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Background circles
+                  Container(
+                    width: 160,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  // Main icon
+                  if (_isEmailVerified)
+                    AnimatedBuilder(
+                      animation: _successScaleAnimation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: _successScaleAnimation.value,
+                          child: const Icon(
+                            Icons.mark_email_read,
+                            size: 70,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                    )
+                  else
+                    const Icon(
+                      Icons.email_outlined,
+                      size: 70,
+                      color: Colors.white,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContent() {
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.1),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            );
+          },
+          child: _isEmailVerified ? _buildSuccessContent() : _buildVerificationForm(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVerificationForm() {
+    return Container(
+      key: const ValueKey('verification_form'),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
           ),
           BoxShadow(
-          color: (_isEmailVerified ? AppColors.success : AppColors.primary).withOpacity(0.1),
-          blurRadius: 60,
-          offset: const Offset(0, 30),
+            color: AppColors.primary.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 5),
           ),
-          ],
+        ],
+      ),
+      child: Column(
+        children: [
+          // Title and description
+          Text(
+            EmailVerifyKeys.enterVerificationCode.tr,
+            style: AppTextStyles.headlineSmall.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.grey900,
+            ),
+            textAlign: TextAlign.center,
           ),
-          child: Stack(
-          alignment: Alignment.center,
-          children: [
+          const SizedBox(height: 12),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.grey600,
+                height: 1.5,
+              ),
+              children: [
+                TextSpan(text: EmailVerifyKeys.verificationCodeSentTo.tr),
+                TextSpan(text: ' '),
+                TextSpan(
+                  text: email,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+
+          // OTP Input
+          PinCodeTextField(
+            appContext: context,
+            length: 6,
+            controller: _otpController,
+            onChanged: (value) {
+              setState(() {
+                _currentOtp = value;
+                _isOtpComplete = value.length == 6;
+              });
+            },
+            onCompleted: (value) {
+              _handleVerifyEmail();
+            },
+            pinTheme: PinTheme(
+              shape: PinCodeFieldShape.box,
+              borderRadius: BorderRadius.circular(12),
+              fieldHeight: 56,
+              fieldWidth: 48,
+              activeFillColor: AppColors.primaryShade.withOpacity(0.1),
+              inactiveFillColor: AppColors.grey50,
+              selectedFillColor: AppColors.primaryShade.withOpacity(0.2),
+              activeColor: AppColors.primary,
+              inactiveColor: AppColors.grey300,
+              selectedColor: AppColors.primary,
+              borderWidth: 2,
+            ),
+            enableActiveFill: true,
+            keyboardType: TextInputType.number,
+            textStyle: AppTextStyles.titleMedium.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.grey900,
+            ),
+            animationType: AnimationType.fade,
+            animationDuration: const Duration(milliseconds: 300),
+            backgroundColor: Colors.transparent,
+            enablePinAutofill: true,
+          ),
+          const SizedBox(height: 32),
+
+          // Verify button
+          Obx(() => _buildAnimatedButton(
+            text: EmailVerifyKeys.verifyEmail.tr,
+            isLoading: _authController.isLoading,
+            isEnabled: _isOtpComplete,
+            onPressed: _isOtpComplete && !_authController.isLoading ? _handleVerifyEmail : null,
+          )),
+          const SizedBox(height: 24),
+
+          // Resend section
+          _buildResendSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuccessContent() {
+    return Container(
+      key: const ValueKey('success_content'),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+          BoxShadow(
+            color: AppColors.success.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
           // Success icon
           Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-          color: AppColors.successShade,
-          shape: BoxShape.circle,
-          ),
-          child: const Icon(
-          Icons.check,
-          size: 40,
-          color: AppColors.success,
-          ),
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppColors.successShade,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.check,
+              size: 40,
+              color: AppColors.success,
+            ),
           ),
           const SizedBox(height: 24),
 
           Text(
-          'email_verified_successfully'.tr,
-          style: AppTextStyles.headlineSmall.copyWith(
-          fontWeight: FontWeight.bold,
-          color: AppColors.grey900,
-          ),
-          textAlign: TextAlign.center,
+            EmailVerifyKeys.emailVerifiedSuccessfully.tr,
+            style: AppTextStyles.headlineSmall.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.grey900,
+            ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
 
           Text(
-          'email_verification_success_description'.tr,
-          style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.grey600,
-          height: 1.5,
-          ),
-          textAlign: TextAlign.center,
+            EmailVerifyKeys.emailVerificationSuccessDescription.tr,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.grey600,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
 
           // Welcome message card
           Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-          color: AppColors.successShade,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.success.withOpacity(0.2)),
-          ),
-          child: Column(
-          children: [
-          Row(
-          children: [
-          Icon(
-          Icons.celebration,
-          color: AppColors.success,
-          size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-          child: Text(
-          'welcome_aboard'.tr,
-          style: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.success,
-          fontWeight: FontWeight.w600,
-          ),
-          ),
-          ),
-          ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-          'welcome_message_description'.tr,
-          style: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.grey700,
-          height: 1.4,
-          ),
-          ),
-          ],
-          ),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.successShade,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.success.withOpacity(0.2)),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.celebration,
+                      color: AppColors.success,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        EmailVerifyKeys.welcomeAboard.tr,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  EmailVerifyKeys.welcomeMessageDescription.tr,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.grey700,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 32),
 
           // Continue button
           CustomButton.primary(
-          text: 'continue_to_app'.tr,
-          onPressed: () => Get.offAllNamed('/home'),
-          icon: const Icon(Icons.arrow_forward, size: 20),
-          width: double.infinity,
+            text: EmailVerifyKeys.continueToApp.tr,
+            onPressed: () => Get.offAllNamed('/home'),
+            icon: const Icon(Icons.arrow_forward, size: 20),
+            width: double.infinity,
           ),
-          ],
-          ),
-          );
-        }
+        ],
+      ),
+    );
+  }
 
-        Widget _buildAnimatedButton({
+  Widget _buildAnimatedButton({
     required String text,
     required bool isLoading,
     required bool isEnabled,
     VoidCallback? onPressed,
-    }) {
-      return Container(
-        width: double.infinity,
-        height: 56,
-        decoration: BoxDecoration(
-          gradient: isEnabled ? AppColors.primaryGradient : null,
-          color: !isEnabled ? AppColors.grey300 : null,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: isEnabled
-              ? [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.4),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
-          ]
-              : [],
-        ),
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+  }) {
+    return Container(
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        gradient: isEnabled ? AppColors.primaryGradient : null,
+        color: !isEnabled ? AppColors.grey300 : null,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: isEnabled
+            ? [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
-          child: isLoading
-              ? const SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 3,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          )
-              : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                text,
-                style: AppTextStyles.buttonLarge.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(
-                Icons.verified,
-                color: Colors.white,
-                size: 20,
-              ),
-            ],
+        ]
+            : [],
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
-      );
-    }
-
-    Widget _buildResendSection() {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.grey50,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Column(
+        child: isLoading
+            ? const SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
+            : Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'didnt_receive_code'.tr,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.grey700,
+              text,
+              style: AppTextStyles.buttonLarge.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(
+              Icons.verified,
+              color: Colors.white,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResendSection() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.grey50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.grey200),
+      ),
+      child: Column(
+        children: [
+          Text(
+            EmailVerifyKeys.didntReceiveCode.tr,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.grey700,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          if (_canResend)
+            TextButton(
+              onPressed: _handleResendCode,
+              child: Text(
+                EmailVerifyKeys.resendVerificationCode.tr,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            )
+          else
+            Text(
+              EmailVerifyKeys.resendInSeconds.tr.replaceAll('{seconds}', _resendCountdown.toString()),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.grey500,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            if (_canResend)
-              TextButton(
-                onPressed: _handleResendCode,
-                child: Text(
-                  'resend_verification_code'.tr,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              )
-            else
-              Text(
-                'resend_in_seconds'.tr.replaceAll('{seconds}', _resendCountdown.toString()),
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.grey500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-          ],
-        ),
-      );
-    }
+        ],
+      ),
+    );
+  }
 
-    Widget _buildBottomSection() {
-      if (_isEmailVerified) return const SizedBox.shrink();
+  Widget _buildBottomSection() {
+    if (_isEmailVerified) return const SizedBox.shrink();
 
-      return AnimatedBuilder(
-        animation: _fadeAnimation,
-        builder: (context, child) {
-          return FadeTransition(
-            opacity: _fadeAnimation,
-            child: Column(
-              children: [
-                // Email tips
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.grey200.withOpacity(0.5)),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.lightbulb_outline,
-                        color: AppColors.info,
-                        size: 32,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'verification_tips'.tr,
-                              style: AppTextStyles.titleSmall.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.grey900,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'verification_tips_description'.tr,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.grey600,
-                                height: 1.4,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+    return AnimatedBuilder(
+      animation: _fadeAnimation,
+      builder: (context, child) {
+        return FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            children: [
+              // Email tips
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.grey200.withOpacity(0.5)),
                 ),
-                const SizedBox(height: 24),
-
-                // Change email
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.grey200),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'wrong_email_address'.tr,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.grey700,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'change_email'.tr,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: Colors.white,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline,
+                      color: AppColors.info,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            EmailVerifyKeys.verificationTips.tr,
+                            style: AppTextStyles.titleSmall.copyWith(
                               fontWeight: FontWeight.w600,
+                              color: AppColors.grey900,
                             ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            EmailVerifyKeys.verificationTipsDescription.tr,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.grey600,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Change email
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.grey200),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      EmailVerifyKeys.wrongEmailAddress.tr,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.grey700,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          EmailVerifyKeys.changeEmail.tr,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
-      );
-    }
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-    void _handleVerifyEmail() {
-      if (_currentOtp.length != 6) return;
+  void _handleVerifyEmail() {
+    if (_currentOtp.length != 6) return;
 
-      FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus();
 
-      _connectivityController.executeIfConnected(() async {
-        try {
-          await _authController.verifyOtp(
-            email: email,
-            otp: _currentOtp,
-            type: type,
-          );
-
-          setState(() {
-            _isEmailVerified = true;
-          });
-          _successController.forward();
-        } catch (e) {
-          // Clear OTP on error
-          _otpController.clear();
-          setState(() {
-            _currentOtp = '';
-            _isOtpComplete = false;
-          });
-        }
-      }, customMessage: 'internet_required_for_verification'.tr);
-    }
-
-    void _handleResendCode() {
-      _connectivityController.executeIfConnected(() async {
-        await _authController.resendOtp(
+    _connectivityController.executeIfConnected(() async {
+      try {
+        await _authController.verifyOtp(
           email: email,
+          otp: _currentOtp,
           type: type,
         );
 
-        // Restart countdown
-        _startResendCountdown();
-
-        // Show success message
-        Get.showSnackbar(GetSnackBar(
-          title: 'verification_code_sent'.tr,
-          message: 'new_verification_code_sent'.tr,
-          backgroundColor: AppColors.success,
-          duration: const Duration(seconds: 3),
-          snackPosition: SnackPosition.TOP,
-          icon: const Icon(Icons.check_circle, color: Colors.white),
-        ));
-      }, customMessage: 'internet_required_for_resend'.tr);
-    }
+        setState(() {
+          _isEmailVerified = true;
+        });
+        _successController.forward();
+      } catch (e) {
+        // Clear OTP on error
+        _otpController.clear();
+        setState(() {
+          _currentOtp = '';
+          _isOtpComplete = false;
+        });
+      }
+    }, customMessage: EmailVerifyKeys.internetRequiredForVerification.tr);
   }
 
-// Translation extension for verify email specific terms
-  extension VerifyEmailTranslationExtensions on String {
-  String get tr {
-    final Map<String, String> verifyEmailTranslations = {
-      'email_verified_success': 'Email Verified Successfully',
-      'verify_email': 'Verify Email',
-      'enter_verification_code': 'Enter Verification Code',
-      'verification_code_sent_to': 'We\'ve sent a 6-digit verification code to',
-      'email_verified_successfully': 'Email Verified Successfully!',
-      'email_verification_success_description': 'Your email has been verified successfully. You can now access all features of your account.',
-      'welcome_aboard': 'Welcome Aboard!',
-      'welcome_message_description': 'Your account is now fully activated. Start exploring and enjoy all the amazing features we have to offer.',
-      'continue_to_app': 'Continue to App',
-      'didnt_receive_code': 'Didn\'t receive the code?',
-      'resend_verification_code': 'Resend Verification Code',
-      'resend_in_seconds': 'Resend in {seconds} seconds',
-      'verification_tips': 'Verification Tips',
-      'verification_tips_description': 'Check your spam folder if you don\'t see the email. The code expires in 15 minutes.',
-      'wrong_email_address': 'Wrong email address?',
-      'change_email': 'Change Email',
-      'internet_required_for_verification': 'Internet connection required for verification',
-      'internet_required_for_resend': 'Internet connection required to resend code',
-      'verification_code_sent': 'Verification Code Sent',
-      'new_verification_code_sent': 'New verification code sent to your email',
-    };
+  void _handleResendCode() {
+    _connectivityController.executeIfConnected(() async {
+      await _authController.resendOtp(
+        email: email,
+        type: type,
+      );
 
-    return verifyEmailTranslations[this] ?? this;
+      // Restart countdown
+      _startResendCountdown();
+
+      // Show success message
+      Get.showSnackbar(GetSnackBar(
+        title: EmailVerifyKeys.verificationCodeSent.tr,
+        message: EmailVerifyKeys.newVerificationCodeSent.tr,
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.TOP,
+        icon: const Icon(Icons.check_circle, color: Colors.white),
+      ));
+    }, customMessage: EmailVerifyKeys.internetRequiredForResend.tr);
   }
-} Background circles
-Container(
-width: 160,
-height: 160,
-decoration: BoxDecoration(
-shape: BoxShape.circle,
-border: Border.all(
-color: Colors.white.withOpacity(0.2),
-width: 2,
-),
-),
-),
-Container(
-width: 120,
-height: 120,
-decoration: BoxDecoration(
-shape: BoxShape.circle,
-border: Border.all(
-color: Colors.white.withOpacity(0.1),
-width: 1,
-),
-),
-),
-// Main icon
-if (_isEmailVerified)
-AnimatedBuilder(
-animation: _successScaleAnimation,
-builder: (context, child) {
-return Transform.scale(
-scale: _successScaleAnimation.value,
-child: const Icon(
-Icons.mark_email_read,
-size: 70,
-color: Colors.white,
-),
-);
-},
-)
-else
-const Icon(
-Icons.email_outlined,
-size: 70,
-color: Colors.white,
-),
-],
-),
-),
-),
-);
-},
-);
 }
 
-Widget _buildContent() {
-return SlideTransition(
-position: _slideAnimation,
-child: FadeTransition(
-opacity: _fadeAnimation,
-child: AnimatedSwitcher(
-duration: const Duration(milliseconds: 500),
-transitionBuilder: (Widget child, Animation<double> animation) {
-return FadeTransition(
-opacity: animation,
-child: SlideTransition(
-position: Tween<Offset>(
-begin: const Offset(0, 0.1),
-end: Offset.zero,
-).animate(animation),
-child: child,
-),
-);
-},
-child: _isEmailVerified ? _buildSuccessContent() : _buildVerificationForm(),
-),
-),
-);
+/// Email verification specific translation keys
+class EmailVerifyKeys {
+  EmailVerifyKeys._();
+
+  static const String emailVerifiedSuccess = 'email_verified_success';
+  static const String verifyEmail = 'verify_email';
+  static const String enterVerificationCode = 'enter_verification_code';
+  static const String verificationCodeSentTo = 'verification_code_sent_to';
+  static const String emailVerifiedSuccessfully = 'email_verified_successfully';
+  static const String emailVerificationSuccessDescription = 'email_verification_success_description';
+  static const String welcomeAboard = 'welcome_aboard';
+  static const String welcomeMessageDescription = 'welcome_message_description';
+  static const String continueToApp = 'continue_to_app';
+  static const String didntReceiveCode = 'didnt_receive_code';
+  static const String resendVerificationCode = 'resend_verification_code';
+  static const String resendInSeconds = 'resend_in_seconds';
+  static const String verificationTips = 'verification_tips';
+  static const String verificationTipsDescription = 'verification_tips_description';
+  static const String wrongEmailAddress = 'wrong_email_address';
+  static const String changeEmail = 'change_email';
+  static const String internetRequiredForVerification = 'internet_required_for_verification';
+  static const String internetRequiredForResend = 'internet_required_for_resend';
+  static const String verificationCodeSent = 'verification_code_sent';
+  static const String newVerificationCodeSent = 'new_verification_code_sent';
 }
-
-Widget _buildVerificationForm() {
-return Container(
-key: const ValueKey('verification_form'),
-padding: const EdgeInsets.all(32),
-decoration: BoxDecoration(
-color: Colors.white,
-borderRadius: BorderRadius.circular(24),
-boxShadow: [
-BoxShadow(
-color: Colors.black.withOpacity(0.05),
-blurRadius: 30,
-offset: const Offset(0, 15),
-),
-BoxShadow(
-color: AppColors.primary.withOpacity(0.05),
-blurRadius: 20,
-offset: const Offset(0, 5),
-),
-],
-),
-child: Column(
-children: [
-// Title and description
-Text(
-'enter_verification_code'.tr,
-style: AppTextStyles.headlineSmall.copyWith(
-fontWeight: FontWeight.bold,
-color: AppColors.grey900,
-),
-textAlign: TextAlign.center,
-),
-const SizedBox(height: 12),
-RichText(
-textAlign: TextAlign.center,
-text: TextSpan(
-style: AppTextStyles.bodyMedium.copyWith(
-color: AppColors.grey600,
-height: 1.5,
-),
-children: [
-TextSpan(text: 'verification_code_sent_to'.tr),
-TextSpan(text: ' '),
-TextSpan(
-text: email,
-style: AppTextStyles.bodyMedium.copyWith(
-color: AppColors.primary,
-fontWeight: FontWeight.w600,
-),
-),
-],
-),
-),
-const SizedBox(height: 40),
-
-// OTP Input
-PinCodeTextField(
-appContext: context,
-length: 6,
-controller: _otpController,
-onChanged: (value) {
-setState(() {
-_currentOtp = value;
-_isOtpComplete = value.length == 6;
-});
-},
-onCompleted: (value) {
-_handleVerifyEmail();
-},
-pinTheme: PinTheme(
-shape: PinCodeFieldShape.box,
-borderRadius: BorderRadius.circular(12),
-fieldHeight: 56,
-fieldWidth: 48,
-activeFillColor: AppColors.primaryShade.withOpacity(0.1),
-inactiveFillColor: AppColors.grey50,
-selectedFillColor: AppColors.primaryShade.withOpacity(0.2),
-activeColor: AppColors.primary,
-inactiveColor: AppColors.grey300,
-selectedColor: AppColors.primary,
-borderWidth: 2,
-),
-enableActiveFill: true,
-keyboardType: TextInputType.number,
-textStyle: AppTextStyles.titleMedium.copyWith(
-fontWeight: FontWeight.bold,
-color: AppColors.grey900,
-),
-animationType: AnimationType.fade,
-animationDuration: const Duration(milliseconds: 300),
-backgroundColor: Colors.transparent,
-enablePinAutofill: true,
-),
-const SizedBox(height: 32),
-
-// Verify button
-Obx(() => _buildAnimatedButton(
-text: 'verify_email'.tr,
-isLoading: _authController.isLoading,
-isEnabled: _isOtpComplete,
-onPressed: _isOtpComplete && !_authController.isLoading ? _handleVerifyEmail : null,
-)),
-const SizedBox(height: 24),
-
-// Resend section
-_buildResendSection(),
-],
-),
-);
-}
-
-Widget _buildSuccessContent() {
-return Container(
-key: const ValueKey('success_content'),
-padding: const EdgeInsets.all(32),
-decoration: BoxDecoration(
-color: Colors.white,
-borderRadius: BorderRadius.circular(24),
-boxShadow: [
-BoxShadow(
-color: Colors.black.withOpacity(0.05),
-blurRadius: 30,
-offset: const Offset(0, 15),
-),
-BoxShadow(
-color: AppColors.success.withOpacity(0.05),
-blurRadius: 20,
-offset: const Offset(0, 5),
-),
-],
-),
-child: Column(
-children: [
-//

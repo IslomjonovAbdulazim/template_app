@@ -191,7 +191,7 @@ class AppTranslations extends Translations {
     // Replace parameters if provided
     if (params != null) {
       params.forEach((paramKey, paramValue) {
-        translation = translation.replaceAll('@$paramKey', paramValue);
+        translation = translation.replaceAll('{$paramKey}', paramValue);
       });
     }
 
@@ -244,11 +244,11 @@ class LanguageModel {
 }
 
 /// Translation helper class to avoid extension conflicts
-class T {
-  T._();
+class AppLocalizations {
+  AppLocalizations._();
 
-  /// Get translation for a key
-  static String get(String key, {Map<String, String>? params}) {
+  /// Get translation for a key with parameters
+  static String translate(String key, {Map<String, String>? params}) {
     return AppTranslations.translate(key, params: params);
   }
 
@@ -256,15 +256,114 @@ class T {
   static String tr(String key) {
     return key.tr;
   }
+
+  /// Safe translation that handles missing keys
+  static String safeTranslate(String key, {String? fallback, Map<String, String>? params}) {
+    final translation = key.tr;
+    if (translation == key && fallback != null) {
+      return fallback;
+    }
+
+    if (params != null) {
+      String result = translation;
+      params.forEach((paramKey, paramValue) {
+        result = result.replaceAll('{$paramKey}', paramValue);
+      });
+      return result;
+    }
+
+    return translation;
+  }
+
+  /// Check if a translation key exists
+  static bool hasTranslation(String key) {
+    return key.tr != key;
+  }
+
+  /// Get all available translations for debugging
+  static Map<String, Map<String, String>> getAllTranslations() {
+    return AppTranslations().keys;
+  }
+
+  /// Get current language info
+  static LanguageModel? getCurrentLanguage() {
+    final currentCode = AppTranslations.currentLanguageCode;
+    return AppTranslations.getAllLanguages()
+        .where((lang) => lang.code == currentCode)
+        .firstOrNull;
+  }
 }
 
-/// Recommended usage patterns:
-///
-/// Option 1: Use GetX built-in .tr (recommended)
-/// Text(TranslationKeys.login.tr)
-///
-/// Option 2: Use our helper class T
-/// Text(T.get(TranslationKeys.login))
-///
-/// Option 3: Use AppTranslations.translate directly
-/// Text(AppTranslations.translate(TranslationKeys.login))
+/// Extension method for easier string translation
+extension StringTranslationExtension on String {
+  /// Get translation with parameters
+  String trParams([Map<String, String>? params]) {
+    if (params == null) return tr;
+
+    String result = tr;
+    params.forEach((key, value) {
+      result = result.replaceAll('{$key}', value);
+    });
+    return result;
+  }
+
+  /// Safe translation with fallback
+  String trSafe([String? fallback]) {
+    final translation = tr;
+    if (translation == this && fallback != null) {
+      return fallback;
+    }
+    return translation;
+  }
+}
+
+/// Validation for translation completeness
+class TranslationValidator {
+  TranslationValidator._();
+
+  /// Check if all languages have the same keys
+  static Map<String, List<String>> validateTranslations() {
+    final translations = AppTranslations().keys;
+    final allKeys = <String>{};
+    final missingKeys = <String, List<String>>{};
+
+    // Collect all keys from all languages
+    translations.forEach((locale, keys) {
+      allKeys.addAll(keys.keys);
+    });
+
+    // Check for missing keys in each language
+    translations.forEach((locale, keys) {
+      final missing = allKeys.where((key) => !keys.containsKey(key)).toList();
+      if (missing.isNotEmpty) {
+        missingKeys[locale] = missing;
+      }
+    });
+
+    return missingKeys;
+  }
+
+  /// Get translation coverage statistics
+  static Map<String, double> getTranslationCoverage() {
+    final translations = AppTranslations().keys;
+    final coverage = <String, double>{};
+
+    if (translations.isEmpty) return coverage;
+
+    final maxKeys = translations.values
+        .map((keys) => keys.length)
+        .reduce((a, b) => a > b ? a : b);
+
+    translations.forEach((locale, keys) {
+      coverage[locale] = keys.length / maxKeys;
+    });
+
+    return coverage;
+  }
+
+  /// Check for unused translation keys
+  static List<String> findUnusedKeys(List<String> usedKeys) {
+    final allTranslationKeys = AppTranslations().keys['en_US']?.keys.toList() ?? [];
+    return allTranslationKeys.where((key) => !usedKeys.contains(key)).toList();
+  }
+}
