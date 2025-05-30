@@ -18,6 +18,7 @@ dependencies:
   dio: ^5.7.0                          # BEST HTTP CLIENT - actively maintained
   retrofit: ^4.4.0                     # API generator - works with Dio
   json_annotation: ^4.9.0              # JSON serialization
+  timezone: ^0.10.1
 
   # 💾 Storage & Database - PROVEN CHOICES
   shared_preferences: ^2.3.3           # Simple key-value storage
