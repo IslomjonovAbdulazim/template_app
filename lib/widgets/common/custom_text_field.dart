@@ -120,8 +120,7 @@ class CustomTextField extends StatefulWidget {
         focusedBorderColor = null,
         errorBorderColor = null,
         filled = true,
-        textCapitalization = TextCapitalization.none,
-        hintStyle = null;
+        textCapitalization = TextCapitalization.none;
 
   /// Password text field constructor
   const CustomTextField.password({

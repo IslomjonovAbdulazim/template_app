@@ -296,123 +296,129 @@ class CompactSocialLoginButtons extends StatelessWidget {
     final size = buttonSize ?? 56;
 
     return Row(
-        mainAxisAlignment: alignment,
-        children: providers.map((provider) {
-      final isProviderLoading = isLoading && loadingProvider == provider.name;
+      mainAxisAlignment: alignment,
+      children: providers.map((provider) {
+        final isProviderLoading = isLoading && loadingProvider == provider.name;
 
-      return Padding(
+        return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          Widget _buildCompactButton(SocialProvider provider, bool isProviderLoading, double size) {
-        return SizedBox(
-          width: size,
-          height: size,
-          child: ElevatedButton(
-            onPressed: !isLoading ? () => onProviderSelected?.call(provider) : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _getBackgroundColor(provider),
-              foregroundColor: _getTextColor(provider),
-              elevation: 1,
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: _getBorderColor(provider),
-                  width: 1,
-                ),
-              ),
+          child: _buildCompactButton(provider, isProviderLoading, size),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildCompactButton(SocialProvider provider, bool isProviderLoading, double size) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: ElevatedButton(
+        onPressed: !isLoading ? () => onProviderSelected?.call(provider) : null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _getBackgroundColor(provider),
+          foregroundColor: _getTextColor(provider),
+          elevation: 1,
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: _getBorderColor(provider),
+              width: 1,
             ),
-            child: isProviderLoading
-                ? SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(_getTextColor(provider)),
-              ),
-            )
-                : _buildCompactIcon(provider),
           ),
-        );
-      }
+        ),
+        child: isProviderLoading
+            ? SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(_getTextColor(provider)),
+          ),
+        )
+            : _buildCompactIcon(provider),
+      ),
+    );
+  }
 
-      Widget _buildCompactIcon(SocialProvider provider) {
-        final iconPath = _getIconPath(provider);
+  Widget _buildCompactIcon(SocialProvider provider) {
+    final iconPath = _getIconPath(provider);
 
-        if (iconPath.endsWith('.svg')) {
-          return SvgPicture.asset(
-            iconPath,
-            width: 24,
-            height: 24,
-            colorFilter: provider == SocialProvider.apple
-                ? ColorFilter.mode(_getIconColor(provider), BlendMode.srcIn)
-                : null,
-          );
-        }
-
-        return Image.asset(
-          iconPath,
-          width: 24,
-          height: 24,
-        );
-      }
-
-      String _getIconPath(SocialProvider provider) {
-        switch (provider) {
-          case SocialProvider.google:
-            return AppImages.iconGoogle;
-          case SocialProvider.apple:
-            return AppImages.iconApple;
-          case SocialProvider.facebook:
-            return AppImages.iconFacebook;
-        }
-      }
-
-      Color _getBackgroundColor(SocialProvider provider) {
-        switch (provider) {
-          case SocialProvider.google:
-            return Colors.white;
-          case SocialProvider.apple:
-            return Colors.black;
-          case SocialProvider.facebook:
-            return AppColors.facebook;
-        }
-      }
-
-      Color _getTextColor(SocialProvider provider) {
-        switch (provider) {
-          case SocialProvider.google:
-            return AppColors.grey800;
-          case SocialProvider.apple:
-            return Colors.white;
-          case SocialProvider.facebook:
-            return Colors.white;
-        }
-      }
-
-      Color _getBorderColor(SocialProvider provider) {
-        switch (provider) {
-          case SocialProvider.google:
-            return AppColors.grey300;
-          case SocialProvider.apple:
-            return Colors.black;
-          case SocialProvider.facebook:
-            return AppColors.facebook;
-        }
-      }
-
-      Color _getIconColor(SocialProvider provider) {
-        switch (provider) {
-          case SocialProvider.google:
-            return AppColors.grey800;
-          case SocialProvider.apple:
-            return Colors.white;
-          case SocialProvider.facebook:
-            return Colors.white;
-        }
-      }
+    if (iconPath.endsWith('.svg')) {
+      return SvgPicture.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+        colorFilter: provider == SocialProvider.apple
+            ? ColorFilter.mode(_getIconColor(provider), BlendMode.srcIn)
+            : null,
+      );
     }
+
+    return Image.asset(
+      iconPath,
+      width: 24,
+      height: 24,
+    );
+  }
+
+  String _getIconPath(SocialProvider provider) {
+    switch (provider) {
+      case SocialProvider.google:
+        return AppImages.iconGoogle;
+      case SocialProvider.apple:
+        return AppImages.iconApple;
+      case SocialProvider.facebook:
+        return AppImages.iconFacebook;
+    }
+  }
+
+  Color _getBackgroundColor(SocialProvider provider) {
+    switch (provider) {
+      case SocialProvider.google:
+        return Colors.white;
+      case SocialProvider.apple:
+        return Colors.black;
+      case SocialProvider.facebook:
+        return AppColors.facebook;
+    }
+  }
+
+  Color _getTextColor(SocialProvider provider) {
+    switch (provider) {
+      case SocialProvider.google:
+        return AppColors.grey800;
+      case SocialProvider.apple:
+        return Colors.white;
+      case SocialProvider.facebook:
+        return Colors.white;
+    }
+  }
+
+  Color _getBorderColor(SocialProvider provider) {
+    switch (provider) {
+      case SocialProvider.google:
+        return AppColors.grey300;
+      case SocialProvider.apple:
+        return Colors.black;
+      case SocialProvider.facebook:
+        return AppColors.facebook;
+    }
+  }
+
+  Color _getIconColor(SocialProvider provider) {
+    switch (provider) {
+      case SocialProvider.google:
+        return AppColors.grey800;
+      case SocialProvider.apple:
+        return Colors.white;
+      case SocialProvider.facebook:
+        return Colors.white;
+    }
+  }
+}
 
 // Add the translation extension if not already present
-    extension StringTranslation on String {
-      String get tr => this; // This should use your actual translation system
-    }
+extension StringTranslation on String {
+  String get tr => this; // This should use your actual translation system
+}
