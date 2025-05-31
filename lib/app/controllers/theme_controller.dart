@@ -3,111 +3,81 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../services/storage_service.dart';
-import '../../utils/app_theme.dart';
 
-/// Controller for managing app theme and appearance settings
-/// Handles dark/light mode switching and theme preferences
+/// Simple theme controller for managing app appearance
 class ThemeController extends GetxController {
   static ThemeController get instance => Get.find<ThemeController>();
 
   final StorageService _storageService = StorageService.instance;
 
   // Theme modes
-  static const String lightMode = 'light';
-  static const String darkMode = 'dark';
-  static const String systemMode = 'system';
+  static const String light = 'light';
+  static const String dark = 'dark';
+  static const String system = 'system';
 
   // Reactive variables
-  final _currentThemeMode = systemMode.obs;
+  final _themeMode = system.obs;
   final _isDarkMode = false.obs;
-  final _isSystemDarkMode = false.obs;
-  final _fontSize = 'medium'.obs;
-  final _isHighContrast = false.obs;
 
   // Getters
-  String get currentThemeMode => _currentThemeMode.value;
+  String get themeMode => _themeMode.value;
   bool get isDarkMode => _isDarkMode.value;
   bool get isLightMode => !_isDarkMode.value;
-  bool get isSystemMode => _currentThemeMode.value == systemMode;
-  bool get isSystemDarkMode => _isSystemDarkMode.value;
-  String get fontSize => _fontSize.value;
-  bool get isHighContrast => _isHighContrast.value;
-
-  // Theme data getters
-  ThemeData get lightTheme => AppTheme.lightTheme;
-  ThemeData get darkTheme => AppTheme.darkTheme;
-  ThemeData get currentTheme => _isDarkMode.value ? darkTheme : lightTheme;
+  bool get isSystemMode => _themeMode.value == system;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    await _loadThemePreferences();
+    await _loadTheme();
     _listenToSystemTheme();
     log('ThemeController initialized');
   }
 
-  /// Load theme preferences from storage
-  Future<void> _loadThemePreferences() async {
+  /// Load saved theme
+  Future<void> _loadTheme() async {
     try {
-      // Load theme mode
-      final savedThemeMode = _storageService.getString('theme_mode', defaultValue: systemMode);
-      _currentThemeMode.value = savedThemeMode ?? systemMode;
-
-      // Load font size
-      final savedFontSize = _storageService.getString('font_size', defaultValue: 'medium');
-      _fontSize.value = savedFontSize ?? 'medium';
-
-      // Load high contrast
-      final savedHighContrast = _storageService.getBool('high_contrast', defaultValue: false);
-      _isHighContrast.value = savedHighContrast;
-
-      // Initialize dark mode based on theme mode
-      _updateDarkModeStatus();
-
-      log('Theme preferences loaded: ${_currentThemeMode.value}');
+      final savedTheme = _storageService.getString('theme_mode', defaultValue: system);
+      _themeMode.value = savedTheme ?? system;
+      _updateDarkMode();
+      log('Theme loaded: ${_themeMode.value}');
     } catch (e) {
-      log('Failed to load theme preferences: $e');
+      log('Failed to load theme: $e');
     }
   }
 
   /// Listen to system theme changes
   void _listenToSystemTheme() {
-    // Get initial system theme
-    _isSystemDarkMode.value = _getSystemBrightness() == Brightness.dark;
+    final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    _updateDarkMode();
 
-    // Listen to system theme changes
+    // Listen for system theme changes
     WidgetsBinding.instance.platformDispatcher.onPlatformBrightnessChanged = () {
-      _isSystemDarkMode.value = _getSystemBrightness() == Brightness.dark;
-      if (_currentThemeMode.value == systemMode) {
-        _updateDarkModeStatus();
+      if (_themeMode.value == system) {
+        _updateDarkMode();
         _updateSystemUI();
       }
     };
   }
 
-  /// Get system brightness
-  Brightness _getSystemBrightness() {
-    return WidgetsBinding.instance.platformDispatcher.platformBrightness;
-  }
-
-  /// Update dark mode status based on current theme mode
-  void _updateDarkModeStatus() {
-    switch (_currentThemeMode.value) {
-      case lightMode:
+  /// Update dark mode based on current theme setting
+  void _updateDarkMode() {
+    switch (_themeMode.value) {
+      case light:
         _isDarkMode.value = false;
         break;
-      case darkMode:
+      case dark:
         _isDarkMode.value = true;
         break;
-      case systemMode:
+      case system:
       default:
-        _isDarkMode.value = _isSystemDarkMode.value;
+        final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+        _isDarkMode.value = brightness == Brightness.dark;
         break;
     }
     _updateSystemUI();
   }
 
-  /// Update system UI overlay style
+  /// Update system UI colors
   void _updateSystemUI() {
     final isDark = _isDarkMode.value;
 
@@ -115,8 +85,7 @@ class ThemeController extends GetxController {
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-        systemNavigationBarColor: isDark ? const Color(0xFF1F2937) : Colors.white,
+        systemNavigationBarColor: isDark ? Colors.grey[900] : Colors.white,
         systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
       ),
     );
@@ -130,8 +99,8 @@ class ThemeController extends GetxController {
     }
 
     try {
-      _currentThemeMode.value = mode;
-      _updateDarkModeStatus();
+      _themeMode.value = mode;
+      _updateDarkMode();
 
       // Save to storage
       await _storageService.setString('theme_mode', mode);
@@ -139,94 +108,42 @@ class ThemeController extends GetxController {
       // Update GetX theme
       Get.changeThemeMode(_getThemeMode());
 
-      log('Theme mode changed to: $mode');
-
-      // Show feedback
-      _showThemeChangeMessage();
+      log('Theme changed to: $mode');
+      _showThemeMessage();
     } catch (e) {
-      log('Failed to set theme mode: $e');
+      log('Failed to set theme: $e');
     }
   }
 
-  /// Toggle between light and dark mode
+  /// Toggle between light and dark
   Future<void> toggleTheme() async {
-    final newMode = _isDarkMode.value ? lightMode : darkMode;
+    final newMode = _isDarkMode.value ? light : dark;
     await setThemeMode(newMode);
   }
 
-  /// Set light theme
+  /// Set to light theme
   Future<void> setLightTheme() async {
-    await setThemeMode(lightMode);
+    await setThemeMode(light);
   }
 
-  /// Set dark theme
+  /// Set to dark theme
   Future<void> setDarkTheme() async {
-    await setThemeMode(darkMode);
+    await setThemeMode(dark);
   }
 
-  /// Set system theme
+  /// Set to system theme
   Future<void> setSystemTheme() async {
-    await setThemeMode(systemMode);
+    await setThemeMode(system);
   }
 
-  /// Set font size
-  Future<void> setFontSize(String size) async {
-    if (!_isValidFontSize(size)) {
-      log('Invalid font size: $size');
-      return;
-    }
-
-    try {
-      _fontSize.value = size;
-
-      // Save to storage
-      await _storageService.setString('font_size', size);
-
-      log('Font size changed to: $size');
-
-      // Update theme with new font size
-      _updateThemeWithFontSize();
-    } catch (e) {
-      log('Failed to set font size: $e');
-    }
-  }
-
-  /// Toggle high contrast
-  Future<void> toggleHighContrast() async {
-    try {
-      _isHighContrast.value = !_isHighContrast.value;
-
-      // Save to storage
-      await _storageService.setBool('high_contrast', _isHighContrast.value);
-
-      log('High contrast ${_isHighContrast.value ? 'enabled' : 'disabled'}');
-
-      // Show feedback
-      Get.showSnackbar(GetSnackBar(
-        title: 'high_contrast'.tr,
-        message: _isHighContrast.value ? 'enabled'.tr : 'disabled'.tr,
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-      ));
-    } catch (e) {
-      log('Failed to toggle high contrast: $e');
-    }
-  }
-
-  /// Update theme with font size changes
-  void _updateThemeWithFontSize() {
-    // Force theme rebuild with new font size
-    Get.forceAppUpdate();
-  }
-
-  /// Get GetX ThemeMode from string
+  /// Get GetX ThemeMode
   ThemeMode _getThemeMode() {
-    switch (_currentThemeMode.value) {
-      case lightMode:
+    switch (_themeMode.value) {
+      case light:
         return ThemeMode.light;
-      case darkMode:
+      case dark:
         return ThemeMode.dark;
-      case systemMode:
+      case system:
       default:
         return ThemeMode.system;
     }
@@ -234,37 +151,32 @@ class ThemeController extends GetxController {
 
   /// Validate theme mode
   bool _isValidThemeMode(String mode) {
-    return [lightMode, darkMode, systemMode].contains(mode);
-  }
-
-  /// Validate font size
-  bool _isValidFontSize(String size) {
-    return ['small', 'medium', 'large'].contains(size);
+    return [light, dark, system].contains(mode);
   }
 
   /// Show theme change message
-  void _showThemeChangeMessage() {
+  void _showThemeMessage() {
     String message;
     IconData icon;
 
-    switch (_currentThemeMode.value) {
-      case lightMode:
-        message = 'light_mode_enabled'.tr;
+    switch (_themeMode.value) {
+      case light:
+        message = 'Light mode enabled';
         icon = Icons.light_mode;
         break;
-      case darkMode:
-        message = 'dark_mode_enabled'.tr;
+      case dark:
+        message = 'Dark mode enabled';
         icon = Icons.dark_mode;
         break;
-      case systemMode:
+      case system:
       default:
-        message = 'system_theme_enabled'.tr;
+        message = 'System theme enabled';
         icon = Icons.auto_mode;
         break;
     }
 
     Get.showSnackbar(GetSnackBar(
-      title: 'theme'.tr,
+      title: 'Theme',
       message: message,
       icon: Icon(icon, color: Colors.white),
       duration: const Duration(seconds: 2),
@@ -272,145 +184,70 @@ class ThemeController extends GetxController {
     ));
   }
 
-  /// Get theme mode display name
-  String getThemeModeDisplayName(String mode) {
+  /// Get theme display name
+  String getThemeDisplayName(String mode) {
     switch (mode) {
-      case lightMode:
-        return 'light_mode'.tr;
-      case darkMode:
-        return 'dark_mode'.tr;
-      case systemMode:
+      case light:
+        return 'Light';
+      case dark:
+        return 'Dark';
+      case system:
       default:
-        return 'system_mode'.tr;
+        return 'System';
     }
   }
 
-  /// Get font size display name
-  String getFontSizeDisplayName(String size) {
-    switch (size) {
-      case 'small':
-        return 'small'.tr;
-      case 'medium':
-        return 'medium'.tr;
-      case 'large':
-        return 'large'.tr;
-      default:
-        return size;
-    }
-  }
-
-  /// Get theme mode icon
-  IconData getThemeModeIcon(String mode) {
+  /// Get theme icon
+  IconData getThemeIcon(String mode) {
     switch (mode) {
-      case lightMode:
+      case light:
         return Icons.light_mode;
-      case darkMode:
+      case dark:
         return Icons.dark_mode;
-      case systemMode:
+      case system:
       default:
         return Icons.auto_mode;
     }
   }
 
-  /// Get font size scale factor
-  double getFontSizeScale() {
-    switch (_fontSize.value) {
-      case 'small':
-        return 0.9;
-      case 'large':
-        return 1.1;
-      case 'medium':
-      default:
-        return 1.0;
-    }
+  /// Get available theme modes
+  List<String> get availableThemes => [light, dark, system];
+
+  /// Show theme selection dialog
+  void showThemeDialog() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Select Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: availableThemes.map((theme) {
+            return ListTile(
+              leading: Icon(getThemeIcon(theme)),
+              title: Text(getThemeDisplayName(theme)),
+              trailing: _themeMode.value == theme
+                  ? const Icon(Icons.check, color: Colors.green)
+                  : null,
+              onTap: () {
+                Get.back();
+                setThemeMode(theme);
+              },
+            );
+          }).toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
   }
 
-  /// Get all available theme modes
-  List<String> get availableThemeModes => [lightMode, darkMode, systemMode];
-
-  /// Get all available font sizes
-  List<String> get availableFontSizes => ['small', 'medium', 'large'];
-
-  /// Check if current theme is custom
-  bool get isCustomTheme => false; // For future custom theme support
-
-  /// Get theme info for debugging
-  Map<String, dynamic> get themeInfo => {
-    'currentThemeMode': _currentThemeMode.value,
-    'isDarkMode': _isDarkMode.value,
-    'isSystemDarkMode': _isSystemDarkMode.value,
-    'fontSize': _fontSize.value,
-    'fontSizeScale': getFontSizeScale(),
-    'isHighContrast': _isHighContrast.value,
-    'systemBrightness': _getSystemBrightness().toString(),
-  };
-
-  /// Reset theme to defaults
-  Future<void> resetToDefaults() async {
-    try {
-      await setThemeMode(systemMode);
-      await setFontSize('medium');
-      _isHighContrast.value = false;
-      await _storageService.setBool('high_contrast', false);
-
-      Get.showSnackbar(GetSnackBar(
-        title: 'theme'.tr,
-        message: 'reset_to_defaults'.tr,
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-      ));
-
-      log('Theme reset to defaults');
-    } catch (e) {
-      log('Failed to reset theme: $e');
-    }
-  }
-
-  /// Apply theme immediately
-  void applyTheme() {
-    Get.changeTheme(currentTheme);
-    _updateSystemUI();
-  }
-
-  /// Preview theme (temporary change)
-  void previewTheme(String mode) {
-    if (!_isValidThemeMode(mode)) return;
-
-    // Temporarily change theme without saving
-    final tempDarkMode = mode == darkMode || (mode == systemMode && _isSystemDarkMode.value);
-
-    Get.changeTheme(tempDarkMode ? darkTheme : lightTheme);
-  }
-
-  /// Cancel theme preview and restore current theme
-  void cancelThemePreview() {
-    applyTheme();
-  }
-
-  /// Get contrast ratio for accessibility
-  double getContrastRatio(Color foreground, Color background) {
-    final fgLuminance = foreground.computeLuminance();
-    final bgLuminance = background.computeLuminance();
-
-    final lighter = fgLuminance > bgLuminance ? fgLuminance : bgLuminance;
-    final darker = fgLuminance > bgLuminance ? bgLuminance : fgLuminance;
-
-    return (lighter + 0.05) / (darker + 0.05);
-  }
-
-  /// Check if colors meet WCAG AA contrast requirements
-  bool meetsContrastRequirements(Color foreground, Color background) {
-    return getContrastRatio(foreground, background) >= 4.5;
-  }
-
-  /// Get adaptive color based on current theme
-  Color getAdaptiveColor(Color lightColor, Color darkColor) {
-    return _isDarkMode.value ? darkColor : lightColor;
-  }
-
-  /// Schedule theme change (for smooth transitions)
-  Future<void> scheduleThemeChange(String mode, {Duration delay = const Duration(milliseconds: 300)}) async {
-    await Future.delayed(delay);
-    await setThemeMode(mode);
+  /// Get current theme display text
+  String get themeDisplayText {
+    final icon = getThemeIcon(_themeMode.value);
+    final name = getThemeDisplayName(_themeMode.value);
+    return '$name Theme';
   }
 }
