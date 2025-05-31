@@ -5,30 +5,30 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 import 'dart:math' as math;
 
-/// Complete theme configuration for the application
-/// Defines both light and dark themes with consistent styling
+/// Complete theme configuration for the debt tracker application
+/// Designed with financial trust, professionalism, and clarity in mind
 class AppTheme {
   AppTheme._();
 
-  /// Light theme configuration
+  /// Light theme configuration - Professional & Trustworthy
   static ThemeData get lightTheme => ThemeData(
     // Color scheme
     colorScheme: const ColorScheme.light(
       brightness: Brightness.light,
-      primary: AppColors.primary,
+      primary: AppColors.primary, // Deep financial blue
       onPrimary: Colors.white,
       primaryContainer: AppColors.primaryShade,
       onPrimaryContainer: AppColors.primaryDark,
-      secondary: AppColors.secondary,
+      secondary: AppColors.secondary, // Professional slate
       onSecondary: Colors.white,
       secondaryContainer: AppColors.secondaryShade,
       onSecondaryContainer: AppColors.secondaryDark,
-      tertiary: AppColors.accent,
+      tertiary: AppColors.credit, // Financial green
       onTertiary: Colors.white,
-      error: AppColors.error,
+      error: AppColors.debt, // Financial red for debts
       onError: Colors.white,
-      errorContainer: AppColors.errorShade,
-      onErrorContainer: AppColors.errorDark,
+      errorContainer: AppColors.debtShade,
+      onErrorContainer: AppColors.debtDark,
       background: LightColors.background,
       onBackground: LightColors.onBackground,
       surface: LightColors.surface,
@@ -47,10 +47,10 @@ class AppTheme {
     // Material 3 design
     useMaterial3: true,
 
-    // App bar theme
+    // App bar theme - Clean financial header
     appBarTheme: AppBarTheme(
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 2,
       backgroundColor: LightColors.surface,
       foregroundColor: LightColors.textPrimary,
       surfaceTintColor: AppColors.primary,
@@ -99,18 +99,18 @@ class AppTheme {
       }),
     ),
 
-    // Card theme
+    // Card theme - Clean financial cards
     cardTheme: CardTheme(
       color: LightColors.cardBackground,
       elevation: 2,
       shadowColor: LightColors.cardShadow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16), // More rounded for modern look
       ),
       margin: const EdgeInsets.all(8),
     ),
 
-    // Elevated button theme
+    // Elevated button theme - Financial actions
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
@@ -120,9 +120,9 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         textStyle: AppTextStyles.buttonMedium,
-        minimumSize: const Size(88, 48),
+        minimumSize: const Size(88, 52),
       ),
     ),
 
@@ -134,9 +134,9 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         textStyle: AppTextStyles.buttonMedium,
-        minimumSize: const Size(88, 48),
+        minimumSize: const Size(88, 52),
       ),
     ),
 
@@ -145,7 +145,7 @@ class AppTheme {
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         textStyle: AppTextStyles.buttonMedium,
@@ -161,7 +161,7 @@ class AppTheme {
       shape: CircleBorder(),
     ),
 
-    // Input decoration theme
+    // Input decoration theme - Financial forms
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: LightColors.inputFill,
@@ -187,8 +187,8 @@ class AppTheme {
       ),
       labelStyle: AppTextStyles.inputLabel.copyWith(color: LightColors.textSecondary),
       hintStyle: AppTextStyles.inputHint.copyWith(color: LightColors.textTertiary),
-      errorStyle: AppTextStyles.inputError.copyWith(color: AppColors.error),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      errorStyle: AppTextStyles.inputError.copyWith(color: AppColors.debt),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
 
     // Checkbox theme
@@ -256,7 +256,7 @@ class AppTheme {
       backgroundColor: LightColors.surface,
       elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
       ),
       titleTextStyle: AppTextStyles.titleLarge.copyWith(
         color: LightColors.textPrimary,
@@ -270,8 +270,9 @@ class AppTheme {
     snackBarTheme: SnackBarThemeData(
       backgroundColor: AppColors.grey800,
       contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       behavior: SnackBarBehavior.floating,
+      elevation: 6,
     ),
 
     // Bottom sheet theme
@@ -279,7 +280,7 @@ class AppTheme {
       backgroundColor: LightColors.surface,
       elevation: 8,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
     ),
 
@@ -300,7 +301,8 @@ class AppTheme {
       textColor: LightColors.textPrimary,
       titleTextStyle: AppTextStyles.listTitle.copyWith(color: LightColors.textPrimary),
       subtitleTextStyle: AppTextStyles.listSubtitle.copyWith(color: LightColors.textSecondary),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
 
     // Icon theme
@@ -336,11 +338,11 @@ class AppTheme {
 
     // Extensions
     extensions: <ThemeExtension<dynamic>>[
-      CustomColors.light,
+      FinancialColors.light,
     ],
   );
 
-  /// Dark theme configuration
+  /// Dark theme configuration - Professional Dark Mode
   static ThemeData get darkTheme => ThemeData(
     // Color scheme
     colorScheme: const ColorScheme.dark(
@@ -353,12 +355,12 @@ class AppTheme {
       onSecondary: AppColors.grey900,
       secondaryContainer: AppColors.secondaryDark,
       onSecondaryContainer: AppColors.secondaryLight,
-      tertiary: AppColors.accentLight,
+      tertiary: AppColors.creditLight,
       onTertiary: AppColors.grey900,
-      error: AppColors.errorLight,
+      error: AppColors.debtLight,
       onError: AppColors.grey900,
-      errorContainer: AppColors.errorDark,
-      onErrorContainer: AppColors.errorLight,
+      errorContainer: AppColors.debtDark,
+      onErrorContainer: AppColors.debtLight,
       background: DarkColors.background,
       onBackground: DarkColors.onBackground,
       surface: DarkColors.surface,
@@ -380,7 +382,7 @@ class AppTheme {
     // App bar theme
     appBarTheme: AppBarTheme(
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 2,
       backgroundColor: DarkColors.surface,
       foregroundColor: DarkColors.textPrimary,
       surfaceTintColor: AppColors.primaryLight,
@@ -432,10 +434,10 @@ class AppTheme {
     // Card theme
     cardTheme: CardTheme(
       color: DarkColors.cardBackground,
-      elevation: 2,
+      elevation: 4,
       shadowColor: DarkColors.cardShadow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
       ),
       margin: const EdgeInsets.all(8),
     ),
@@ -445,14 +447,14 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryLight,
         foregroundColor: AppColors.grey900,
-        elevation: 2,
+        elevation: 3,
         shadowColor: AppColors.primaryLight.withOpacity(0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         textStyle: AppTextStyles.buttonMedium,
-        minimumSize: const Size(88, 48),
+        minimumSize: const Size(88, 52),
       ),
     ),
 
@@ -464,9 +466,9 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         textStyle: AppTextStyles.buttonMedium,
-        minimumSize: const Size(88, 48),
+        minimumSize: const Size(88, 52),
       ),
     ),
 
@@ -475,7 +477,7 @@ class AppTheme {
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primaryLight,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         textStyle: AppTextStyles.buttonMedium,
@@ -517,12 +519,80 @@ class AppTheme {
       ),
       labelStyle: AppTextStyles.inputLabel.copyWith(color: DarkColors.textSecondary),
       hintStyle: AppTextStyles.inputHint.copyWith(color: DarkColors.textTertiary),
-      errorStyle: AppTextStyles.inputError.copyWith(color: AppColors.errorLight),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      errorStyle: AppTextStyles.inputError.copyWith(color: AppColors.debtLight),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
 
-    // Other theme configurations similar to light theme but with dark colors...
-    // (Abbreviated for brevity - would include all the same theme properties)
+    // Checkbox theme
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return AppColors.primaryLight;
+        }
+        return Colors.transparent;
+      }),
+      checkColor: MaterialStateProperty.all(AppColors.grey900),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    ),
+
+    // Radio theme
+    radioTheme: RadioThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return AppColors.primaryLight;
+        }
+        return DarkColors.textTertiary;
+      }),
+    ),
+
+    // Switch theme
+    switchTheme: SwitchThemeData(
+      thumbColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return AppColors.primaryLight;
+        }
+        return AppColors.grey400;
+      }),
+      trackColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return AppColors.primaryLight.withOpacity(0.5);
+        }
+        return AppColors.grey600;
+      }),
+    ),
+
+    // Dialog theme
+    dialogTheme: DialogTheme(
+      backgroundColor: DarkColors.surface,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      titleTextStyle: AppTextStyles.titleLarge.copyWith(
+        color: DarkColors.textPrimary,
+      ),
+      contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+        color: DarkColors.textSecondary,
+      ),
+    ),
+
+    // Snackbar theme
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: AppColors.grey800,
+      contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      behavior: SnackBarBehavior.floating,
+      elevation: 6,
+    ),
+
+    // Bottom sheet theme
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: DarkColors.surface,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+    ),
 
     // Text theme
     textTheme: GoogleFonts.interTextTheme().copyWith(
@@ -545,90 +615,111 @@ class AppTheme {
 
     // Extensions
     extensions: <ThemeExtension<dynamic>>[
-      CustomColors.dark,
+      FinancialColors.dark,
     ],
   );
 }
 
-/// Custom colors extension for additional theme colors
+/// Financial colors extension for debt tracker specific colors
 @immutable
-class CustomColors extends ThemeExtension<CustomColors> {
-  final Color? success;
-  final Color? warning;
-  final Color? info;
-  final Color? successContainer;
-  final Color? warningContainer;
-  final Color? infoContainer;
+class FinancialColors extends ThemeExtension<FinancialColors> {
+  final Color? debt;
+  final Color? credit;
+  final Color? pending;
+  final Color? debtBackground;
+  final Color? creditBackground;
+  final Color? pendingBackground;
+  final Color? positiveAmount;
+  final Color? negativeAmount;
+  final Color? neutralAmount;
 
-  const CustomColors({
-    required this.success,
-    required this.warning,
-    required this.info,
-    required this.successContainer,
-    required this.warningContainer,
-    required this.infoContainer,
+  const FinancialColors({
+    required this.debt,
+    required this.credit,
+    required this.pending,
+    required this.debtBackground,
+    required this.creditBackground,
+    required this.pendingBackground,
+    required this.positiveAmount,
+    required this.negativeAmount,
+    required this.neutralAmount,
   });
 
-  static const light = CustomColors(
-    success: AppColors.success,
-    warning: AppColors.warning,
-    info: AppColors.info,
-    successContainer: AppColors.successShade,
-    warningContainer: AppColors.warningShade,
-    infoContainer: AppColors.infoShade,
+  static const light = FinancialColors(
+    debt: AppColors.debt,
+    credit: AppColors.credit,
+    pending: AppColors.pending,
+    debtBackground: AppColors.debtShade,
+    creditBackground: AppColors.creditShade,
+    pendingBackground: AppColors.pendingShade,
+    positiveAmount: AppColors.credit,
+    negativeAmount: AppColors.debt,
+    neutralAmount: AppColors.grey500,
   );
 
-  static const dark = CustomColors(
-    success: AppColors.successLight,
-    warning: AppColors.warningLight,
-    info: AppColors.infoLight,
-    successContainer: AppColors.successDark,
-    warningContainer: AppColors.warningDark,
-    infoContainer: AppColors.infoDark,
+  static const dark = FinancialColors(
+    debt: AppColors.debtLight,
+    credit: AppColors.creditLight,
+    pending: AppColors.pendingLight,
+    debtBackground: AppColors.debtDark,
+    creditBackground: AppColors.creditDark,
+    pendingBackground: AppColors.pendingDark,
+    positiveAmount: AppColors.creditLight,
+    negativeAmount: AppColors.debtLight,
+    neutralAmount: AppColors.grey400,
   );
 
   @override
-  CustomColors copyWith({
-    Color? success,
-    Color? warning,
-    Color? info,
-    Color? successContainer,
-    Color? warningContainer,
-    Color? infoContainer,
+  FinancialColors copyWith({
+    Color? debt,
+    Color? credit,
+    Color? pending,
+    Color? debtBackground,
+    Color? creditBackground,
+    Color? pendingBackground,
+    Color? positiveAmount,
+    Color? negativeAmount,
+    Color? neutralAmount,
   }) {
-    return CustomColors(
-      success: success ?? this.success,
-      warning: warning ?? this.warning,
-      info: info ?? this.info,
-      successContainer: successContainer ?? this.successContainer,
-      warningContainer: warningContainer ?? this.warningContainer,
-      infoContainer: infoContainer ?? this.infoContainer,
+    return FinancialColors(
+      debt: debt ?? this.debt,
+      credit: credit ?? this.credit,
+      pending: pending ?? this.pending,
+      debtBackground: debtBackground ?? this.debtBackground,
+      creditBackground: creditBackground ?? this.creditBackground,
+      pendingBackground: pendingBackground ?? this.pendingBackground,
+      positiveAmount: positiveAmount ?? this.positiveAmount,
+      negativeAmount: negativeAmount ?? this.negativeAmount,
+      neutralAmount: neutralAmount ?? this.neutralAmount,
     );
   }
 
   @override
-  CustomColors lerp(ThemeExtension<CustomColors>? other, double t) {
-    if (other is! CustomColors) {
+  FinancialColors lerp(ThemeExtension<FinancialColors>? other, double t) {
+    if (other is! FinancialColors) {
       return this;
     }
-    return CustomColors(
-      success: Color.lerp(success, other.success, t),
-      warning: Color.lerp(warning, other.warning, t),
-      info: Color.lerp(info, other.info, t),
-      successContainer: Color.lerp(successContainer, other.successContainer, t),
-      warningContainer: Color.lerp(warningContainer, other.warningContainer, t),
-      infoContainer: Color.lerp(infoContainer, other.infoContainer, t),
+    return FinancialColors(
+      debt: Color.lerp(debt, other.debt, t),
+      credit: Color.lerp(credit, other.credit, t),
+      pending: Color.lerp(pending, other.pending, t),
+      debtBackground: Color.lerp(debtBackground, other.debtBackground, t),
+      creditBackground: Color.lerp(creditBackground, other.creditBackground, t),
+      pendingBackground: Color.lerp(pendingBackground, other.pendingBackground, t),
+      positiveAmount: Color.lerp(positiveAmount, other.positiveAmount, t),
+      negativeAmount: Color.lerp(negativeAmount, other.negativeAmount, t),
+      neutralAmount: Color.lerp(neutralAmount, other.neutralAmount, t),
     );
   }
 }
 
-/// Theme utility methods
-class ThemeUtils {
-  ThemeUtils._();
+/// Theme utility methods for debt tracker
+class DebtThemeUtils {
+  DebtThemeUtils._();
 
-  /// Get custom colors from context
-  static CustomColors getCustomColors(BuildContext context) {
-    return Theme.of(context).extension<CustomColors>() ?? CustomColors.light;
+  /// Get financial colors from context
+  static FinancialColors getFinancialColors(BuildContext context) {
+    return Theme.of(context).extension<FinancialColors>() ?? FinancialColors.light;
   }
 
   /// Check if current theme is dark
@@ -636,17 +727,35 @@ class ThemeUtils {
     return Theme.of(context).brightness == Brightness.dark;
   }
 
-  /// Get appropriate color based on theme
-  static Color getAdaptiveColor(BuildContext context, Color lightColor, Color darkColor) {
-    return isDark(context) ? darkColor : lightColor;
+  /// Get amount color based on value
+  static Color getAmountColor(BuildContext context, double amount) {
+    final financialColors = getFinancialColors(context);
+
+    if (amount > 0) {
+      return financialColors.positiveAmount!;
+    } else if (amount < 0) {
+      return financialColors.negativeAmount!;
+    } else {
+      return financialColors.neutralAmount!;
+    }
   }
 
-  /// Get text color based on background
+  /// Get debt status color
+  static Color getDebtStatusColor(BuildContext context, String status) {
+    return FinancialColorUtils.getDebtStatusColor(status);
+  }
+
+  /// Get category color
+  static Color getCategoryColor(String category) {
+    return FinancialColorUtils.getCategoryColor(category);
+  }
+
+  /// Get appropriate text color based on background
   static Color getContrastingTextColor(Color backgroundColor) {
-    return backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    return FinancialColorUtils.getContrastingTextColor(backgroundColor);
   }
 
-  /// Apply elevation overlay for dark theme
+  /// Apply elevation overlay for dark theme surfaces
   static Color getElevationOverlay(BuildContext context, Color surfaceColor, double elevation) {
     if (!isDark(context)) return surfaceColor;
 
@@ -656,5 +765,43 @@ class ThemeUtils {
       surfaceColor,
     );
   }
-}
 
+  /// Get financial card decoration
+  static BoxDecoration getFinancialCardDecoration(BuildContext context, {
+    Color? backgroundColor,
+    double elevation = 2,
+    double borderRadius = 16,
+  }) {
+    final theme = Theme.of(context);
+    final isDarkTheme = isDark(context);
+
+    return BoxDecoration(
+      color: backgroundColor ?? theme.cardColor,
+      borderRadius: BorderRadius.circular(borderRadius),
+      boxShadow: [
+        BoxShadow(
+          color: isDarkTheme
+              ? Colors.black.withOpacity(0.3)
+              : Colors.black.withOpacity(0.1),
+          blurRadius: elevation * 2,
+          offset: Offset(0, elevation),
+        ),
+      ],
+    );
+  }
+
+  /// Get gradient for amount display
+  static LinearGradient getAmountGradient(double amount) {
+    if (amount > 0) {
+      return AppColors.creditGradient;
+    } else if (amount < 0) {
+      return AppColors.debtGradient;
+    } else {
+      return const LinearGradient(
+        colors: [AppColors.grey400, AppColors.grey500],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+    }
+  }
+}

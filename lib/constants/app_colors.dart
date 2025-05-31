@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
 
-/// Application color palette for light and dark themes
-/// Centralized color definitions to maintain consistency across the app
+/// Financial-focused color palette for debt tracker application
+/// Designed to convey trust, professionalism, and financial clarity
 class AppColors {
   AppColors._();
 
-  // Primary Brand Colors
-  static const Color primary = Color(0xFF3B82F6); // Blue-500
-  static const Color primaryLight = Color(0xFF60A5FA); // Blue-400
-  static const Color primaryDark = Color(0xFF1D4ED8); // Blue-700
-  static const Color primaryShade = Color(0xFFEBF4FF); // Blue-50
+  // Primary Brand Colors - Deep Financial Blue
+  static const Color primary = Color(0xFF1E3A8A); // Deep Blue-800 - Trust & Security
+  static const Color primaryLight = Color(0xFF3B82F6); // Blue-500 - Interactive elements
+  static const Color primaryDark = Color(0xFF1E40AF); // Blue-700 - Pressed states
+  static const Color primaryShade = Color(0xFFEFF6FF); // Blue-50 - Light backgrounds
 
-  // Secondary Colors
-  static const Color secondary = Color(0xFF6366F1); // Indigo-500
-  static const Color secondaryLight = Color(0xFF818CF8); // Indigo-400
-  static const Color secondaryDark = Color(0xFF4338CA); // Indigo-700
-  static const Color secondaryShade = Color(0xFFEEF2FF); // Indigo-50
+  // Secondary Colors - Professional Slate
+  static const Color secondary = Color(0xFF475569); // Slate-600 - Professional gray-blue
+  static const Color secondaryLight = Color(0xFF64748B); // Slate-500 - Secondary text
+  static const Color secondaryDark = Color(0xFF334155); // Slate-700 - Dark elements
+  static const Color secondaryShade = Color(0xFFF8FAFC); // Slate-50 - Subtle backgrounds
 
-  // Accent Colors
-  static const Color accent = Color(0xFF10B981); // Emerald-500
-  static const Color accentLight = Color(0xFF34D399); // Emerald-400
-  static const Color accentDark = Color(0xFF047857); // Emerald-700
+  // Financial Status Colors
+  static const Color debt = Color(0xFFDC2626); // Red-600 - Debt/Owed amounts
+  static const Color debtLight = Color(0xFFEF4444); // Red-500 - Debt indicators
+  static const Color debtDark = Color(0xFFB91C1C); // Red-700 - Critical debt
+  static const Color debtShade = Color(0xFFFEF2F2); // Red-50 - Debt backgrounds
 
-  // Neutral Colors (Light Theme)
+  static const Color credit = Color(0xFF059669); // Emerald-600 - Credit/Positive amounts
+  static const Color creditLight = Color(0xFF10B981); // Emerald-500 - Credit indicators
+  static const Color creditDark = Color(0xFF047857); // Emerald-700 - Confirmed payments
+  static const Color creditShade = Color(0xFFF0FDF4); // Green-50 - Credit backgrounds
+
+  static const Color pending = Color(0xFFD97706); // Amber-600 - Pending transactions
+  static const Color pendingLight = Color(0xFFF59E0B); // Amber-500 - Pending indicators
+  static const Color pendingDark = Color(0xFFB45309); // Amber-700 - Urgent pending
+  static const Color pendingShade = Color(0xFFFFFBEB); // Amber-50 - Pending backgrounds
+
+  // Neutral Colors (Professional Gray Scale)
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color grey50 = Color(0xFFF9FAFB);
@@ -37,56 +48,86 @@ class AppColors {
   static const Color grey900 = Color(0xFF111827);
 
   // Status Colors
-  static const Color success = Color(0xFF10B981); // Emerald-500
-  static const Color successLight = Color(0xFF34D399); // Emerald-400
+  static const Color success = Color(0xFF059669); // Emerald-600 - Same as credit
+  static const Color successLight = Color(0xFF10B981); // Emerald-500
   static const Color successDark = Color(0xFF047857); // Emerald-700
-  static const Color successShade = Color(0xFFECFDF5); // Emerald-50
+  static const Color successShade = Color(0xFFF0FDF4); // Green-50
 
-  static const Color warning = Color(0xFFF59E0B); // Amber-500
-  static const Color warningLight = Color(0xFFFBBF24); // Amber-400
-  static const Color warningDark = Color(0xFFD97706); // Amber-600
+  static const Color warning = Color(0xFFD97706); // Amber-600 - Same as pending
+  static const Color warningLight = Color(0xFFF59E0B); // Amber-500
+  static const Color warningDark = Color(0xFFB45309); // Amber-700
   static const Color warningShade = Color(0xFFFFFBEB); // Amber-50
 
-  static const Color error = Color(0xFFEF4444); // Red-500
-  static const Color errorLight = Color(0xFFF87171); // Red-400
-  static const Color errorDark = Color(0xFFDC2626); // Red-600
+  static const Color error = Color(0xFFDC2626); // Red-600 - Same as debt
+  static const Color errorLight = Color(0xFFEF4444); // Red-500
+  static const Color errorDark = Color(0xFFB91C1C); // Red-700
   static const Color errorShade = Color(0xFFFEF2F2); // Red-50
 
-  static const Color info = Color(0xFF3B82F6); // Blue-500
-  static const Color infoLight = Color(0xFF60A5FA); // Blue-400
+  static const Color info = Color(0xFF2563EB); // Blue-600 - Information
+  static const Color infoLight = Color(0xFF3B82F6); // Blue-500
   static const Color infoDark = Color(0xFF1D4ED8); // Blue-700
-  static const Color infoShade = Color(0xFFEBF4FF); // Blue-50
+  static const Color infoShade = Color(0xFFEFF6FF); // Blue-50
 
-  // Social Colors
+  // Social/Payment Method Colors
   static const Color google = Color(0xFF4285F4);
   static const Color facebook = Color(0xFF1877F2);
   static const Color apple = Color(0xFF000000);
-  static const Color twitter = Color(0xFF1DA1F2);
-  static const Color linkedin = Color(0xFF0A66C2);
+  static const Color paypal = Color(0xFF00457C);
+  static const Color mastercard = Color(0xFFEB001B);
+  static const Color visa = Color(0xFF1A1F71);
 
-  // Gradient Colors
+  // Financial Category Colors
+  static const Color housing = Color(0xFF7C3AED); // Violet-600 - Housing/Rent
+  static const Color food = Color(0xFFEC4899); // Pink-500 - Food/Dining
+  static const Color transport = Color(0xFF0EA5E9); // Sky-500 - Transportation
+  static const Color utilities = Color(0xFF06B6D4); // Cyan-500 - Utilities
+  static const Color entertainment = Color(0xFFF59E0B); // Amber-500 - Entertainment
+  static const Color healthcare = Color(0xFFEF4444); // Red-500 - Healthcare
+  static const Color education = Color(0xFF3B82F6); // Blue-500 - Education
+  static const Color shopping = Color(0xFF8B5CF6); // Violet-500 - Shopping
+  static const Color personal = Color(0xFF10B981); // Emerald-500 - Personal
+
+  // Gradient Colors for Financial Charts
+  static const LinearGradient debtGradient = LinearGradient(
+    colors: [debt, debtLight],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient creditGradient = LinearGradient(
+    colors: [credit, creditLight],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primary, primaryDark],
+    colors: [primary, primaryLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient secondaryGradient = LinearGradient(
-    colors: [secondary, secondaryDark],
+  static const LinearGradient balanceGradient = LinearGradient(
+    colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6), Color(0xFF06B6D4)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient successGradient = LinearGradient(
-    colors: [success, successDark],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  // Chart Colors for Data Visualization
+  static const List<Color> chartColors = [
+    Color(0xFF3B82F6), // Blue
+    Color(0xFF10B981), // Emerald
+    Color(0xFFDC2626), // Red
+    Color(0xFFF59E0B), // Amber
+    Color(0xFF8B5CF6), // Violet
+    Color(0xFFEC4899), // Pink
+    Color(0xFF06B6D4), // Cyan
+    Color(0xFF84CC16), // Lime
+  ];
 }
 
 /// Light theme colors
 class LightColors {
-  static const Color background = AppColors.white;
+  static const Color background = Color(0xFFFAFAFA); // Slightly warm white
   static const Color surface = AppColors.white;
   static const Color surfaceVariant = AppColors.grey50;
   static const Color onBackground = AppColors.grey900;
@@ -119,6 +160,11 @@ class LightColors {
   static const Color cardBackground = AppColors.white;
   static const Color cardShadow = Color(0x1A000000);
 
+  // Financial specific colors
+  static const Color positiveBalance = AppColors.credit;
+  static const Color negativeBalance = AppColors.debt;
+  static const Color neutralBalance = AppColors.grey500;
+
   // Divider colors
   static const Color divider = AppColors.grey200;
   static const Color dividerLight = AppColors.grey100;
@@ -126,9 +172,9 @@ class LightColors {
 
 /// Dark theme colors
 class DarkColors {
-  static const Color background = AppColors.grey900;
-  static const Color surface = AppColors.grey800;
-  static const Color surfaceVariant = AppColors.grey700;
+  static const Color background = Color(0xFF0F172A); // Slate-900 - Deep professional dark
+  static const Color surface = Color(0xFF1E293B); // Slate-800 - Card surfaces
+  static const Color surfaceVariant = Color(0xFF334155); // Slate-700 - Elevated surfaces
   static const Color onBackground = AppColors.white;
   static const Color onSurface = AppColors.white;
   static const Color onSurfaceVariant = AppColors.grey300;
@@ -150,27 +196,163 @@ class DarkColors {
   static const Color shadowDark = Color(0x4D000000);
 
   // Input colors
-  static const Color inputFill = AppColors.grey800;
+  static const Color inputFill = Color(0xFF334155); // Slate-700
   static const Color inputBorder = AppColors.grey600;
   static const Color inputFocusBorder = AppColors.primaryLight;
   static const Color inputErrorBorder = AppColors.errorLight;
 
   // Card colors
-  static const Color cardBackground = AppColors.grey800;
+  static const Color cardBackground = Color(0xFF1E293B); // Slate-800
   static const Color cardShadow = Color(0x33000000);
+
+  // Financial specific colors (adjusted for dark theme)
+  static const Color positiveBalance = AppColors.creditLight;
+  static const Color negativeBalance = AppColors.debtLight;
+  static const Color neutralBalance = AppColors.grey400;
 
   // Divider colors
   static const Color divider = AppColors.grey600;
   static const Color dividerLight = AppColors.grey700;
 }
 
-/// Color utilities
-class ColorUtils {
-  ColorUtils._();
+/// Color utilities specific to debt tracking
+class FinancialColorUtils {
+  FinancialColorUtils._();
 
-  /// Get color with opacity
-  static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
+  /// Get color based on amount (positive = green, negative = red, zero = neutral)
+  static Color getAmountColor(double amount, {bool isDarkTheme = false}) {
+    if (amount > 0) {
+      return isDarkTheme ? DarkColors.positiveBalance : LightColors.positiveBalance;
+    } else if (amount < 0) {
+      return isDarkTheme ? DarkColors.negativeBalance : LightColors.negativeBalance;
+    } else {
+      return isDarkTheme ? DarkColors.neutralBalance : LightColors.neutralBalance;
+    }
+  }
+
+  /// Get debt status color
+  static Color getDebtStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'paid':
+      case 'completed':
+      case 'settled':
+        return AppColors.success;
+      case 'overdue':
+      case 'late':
+        return AppColors.error;
+      case 'pending':
+      case 'due_soon':
+        return AppColors.warning;
+      case 'partial':
+        return AppColors.info;
+      default:
+        return AppColors.grey500;
+    }
+  }
+
+  /// Get category color
+  static Color getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'housing':
+      case 'rent':
+      case 'mortgage':
+        return AppColors.housing;
+      case 'food':
+      case 'dining':
+      case 'groceries':
+        return AppColors.food;
+      case 'transport':
+      case 'car':
+      case 'fuel':
+        return AppColors.transport;
+      case 'utilities':
+      case 'electricity':
+      case 'water':
+        return AppColors.utilities;
+      case 'entertainment':
+      case 'movies':
+      case 'games':
+        return AppColors.entertainment;
+      case 'healthcare':
+      case 'medical':
+      case 'insurance':
+        return AppColors.healthcare;
+      case 'education':
+      case 'books':
+      case 'courses':
+        return AppColors.education;
+      case 'shopping':
+      case 'clothes':
+      case 'electronics':
+        return AppColors.shopping;
+      case 'personal':
+      case 'other':
+        return AppColors.personal;
+      default:
+        return AppColors.grey500;
+    }
+  }
+
+  /// Get priority color for debts
+  static Color getPriorityColor(int priority) {
+    switch (priority) {
+      case 1: // High priority
+        return AppColors.error;
+      case 2: // Medium priority
+        return AppColors.warning;
+      case 3: // Low priority
+        return AppColors.info;
+      default:
+        return AppColors.grey500;
+    }
+  }
+
+  /// Get interest rate color (higher rates = more red)
+  static Color getInterestRateColor(double rate) {
+    if (rate >= 15.0) return AppColors.error; // High interest
+    if (rate >= 10.0) return AppColors.warning; // Medium interest
+    if (rate >= 5.0) return AppColors.info; // Low interest
+    return AppColors.success; // Very low/no interest
+  }
+
+  /// Get payment method color
+  static Color getPaymentMethodColor(String method) {
+    switch (method.toLowerCase()) {
+      case 'cash':
+        return AppColors.success;
+      case 'credit_card':
+      case 'card':
+        return AppColors.primary;
+      case 'bank_transfer':
+      case 'wire':
+        return AppColors.info;
+      case 'paypal':
+        return AppColors.paypal;
+      case 'crypto':
+      case 'bitcoin':
+        return AppColors.warning;
+      default:
+        return AppColors.grey500;
+    }
+  }
+
+  /// Convert hex string to Color
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Convert Color to hex string
+  static String toHex(Color color) {
+    return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+  }
+
+  /// Get contrasting text color (black or white) for a given background color
+  static Color getContrastingTextColor(Color backgroundColor) {
+    final luminance = backgroundColor.computeLuminance();
+    return luminance > 0.5 ? AppColors.black : AppColors.white;
   }
 
   /// Darken a color by percentage
@@ -195,46 +377,5 @@ class ColorUtils {
       (color.green + ((255 - color.green) * f)).round(),
       (color.blue + ((255 - color.blue) * f)).round(),
     );
-  }
-
-  /// Get status color based on status string
-  static Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'success':
-      case 'completed':
-      case 'active':
-        return AppColors.success;
-      case 'warning':
-      case 'pending':
-        return AppColors.warning;
-      case 'error':
-      case 'failed':
-      case 'inactive':
-        return AppColors.error;
-      case 'info':
-      case 'processing':
-        return AppColors.info;
-      default:
-        return AppColors.grey500;
-    }
-  }
-
-  /// Convert hex string to Color
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
-
-  /// Convert Color to hex string
-  static String toHex(Color color) {
-    return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}';
-  }
-
-  /// Get contrasting text color (black or white) for a given background color
-  static Color getContrastingTextColor(Color backgroundColor) {
-    final luminance = backgroundColor.computeLuminance();
-    return luminance > 0.5 ? AppColors.black : AppColors.white;
   }
 }
