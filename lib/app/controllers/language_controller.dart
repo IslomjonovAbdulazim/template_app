@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import '../../services/storage_service.dart';
 import '../translations/app_translations.dart';
 
-/// Simple language controller for managing app languages
+/// Language controller for managing app languages with proper GetX integration
 class LanguageController extends GetxController {
   static LanguageController get instance => Get.find<LanguageController>();
 
-  final StorageService _storageService = StorageService.instance;
+  late final StorageService _storageService;
 
   // Reactive variables
   final _currentLanguageCode = 'en'.obs;
@@ -24,6 +24,7 @@ class LanguageController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    _storageService = Get.find<StorageService>();
     await _loadLanguage();
     log('LanguageController initialized');
   }
@@ -107,7 +108,7 @@ class LanguageController extends GetxController {
 
   /// Check if language is supported
   bool _isLanguageSupported(String languageCode) {
-    return ['en', 'ru', 'uz'].contains(languageCode);
+    return AppTranslations.isLanguageSupported(languageCode);
   }
 
   /// Check if language is current
@@ -122,7 +123,7 @@ class LanguageController extends GetxController {
   void showLanguageDialog() {
     Get.dialog(
       AlertDialog(
-        title: Text('select_language'.tr),
+        title: Text(_getTranslation('select_language')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: availableLanguages.map((lang) {
@@ -146,17 +147,24 @@ class LanguageController extends GetxController {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('cancel'.tr),
+            child: Text(_getTranslation('cancel')),
           ),
         ],
       ),
     );
   }
 
+  /// Get translation for a key
+  String _getTranslation(String key) {
+    final currentLocale = Get.locale ?? AppTranslations.fallbackLocale;
+    final translations = AppTranslations().keys[currentLocale.toString()] ?? {};
+    return translations[key] ?? key;
+  }
+
   /// Show success message
   void _showSuccess(String message) {
     Get.showSnackbar(GetSnackBar(
-      title: 'Success',
+      title: _getTranslation('success'),
       message: message,
       backgroundColor: Colors.green,
       duration: const Duration(seconds: 2),
@@ -167,7 +175,7 @@ class LanguageController extends GetxController {
   /// Show error message
   void _showError(String message) {
     Get.showSnackbar(GetSnackBar(
-      title: 'Error',
+      title: _getTranslation('error'),
       message: message,
       backgroundColor: Colors.red,
       duration: const Duration(seconds: 2),
@@ -177,4 +185,17 @@ class LanguageController extends GetxController {
 
   /// Get current language display text
   String get languageDisplayText => '$currentLanguageFlag $currentLanguageName';
+
+  /// Get language font scale (for some languages that need different scaling)
+  double getFontSizeScale() {
+    switch (_currentLanguageCode.value) {
+      case 'uz':
+        return 0.95; // Uzbek text might need slightly smaller scaling
+      case 'ru':
+        return 1.0; // Russian is fine with default
+      case 'en':
+      default:
+        return 1.0; // English default
+    }
+  }
 }

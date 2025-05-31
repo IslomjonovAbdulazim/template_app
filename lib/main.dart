@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+// Core imports
 import 'app/controllers/auth_controller.dart';
 import 'app/controllers/connectivity_controller.dart';
 import 'app/controllers/language_controller.dart';
@@ -9,19 +11,23 @@ import 'app/controllers/theme_controller.dart';
 import 'app/translations/app_translations.dart';
 import 'app/bindings/initial_binding.dart';
 import 'app/routes/app_pages.dart';
-import 'services/storage_service.dart';
-import 'services/connectivity_service.dart';
-import 'services/auth_service.dart';
 import 'utils/app_theme.dart';
 import 'constants/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize core services
-  await _initializeServices();
+  // Setup system UI
+  _setupSystemUI();
 
-  // Set system UI overlay style
+  // Initialize app translations
+  AppTranslations.initialize();
+
+  runApp(MyApp());
+}
+
+/// Setup system UI styling
+void _setupSystemUI() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -32,50 +38,23 @@ void main() async {
     ),
   );
 
-  // Set preferred orientations
-  await SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  runApp(MyApp());
-}
-
-/// Initialize all required services
-Future<void> _initializeServices() async {
-  try {
-    // Initialize storage service first
-    await Get.putAsync(() => StorageService().init());
-
-    // Initialize other services
-    await Get.putAsync(() => ConnectivityService().init());
-    await Get.putAsync(() => AuthService().init());
-
-    // Initialize translation system
-    AppTranslations.initialize();
-
-    print('✅ All services initialized successfully');
-  } catch (e) {
-    print('❌ Error initializing services: $e');
-  }
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      // App configuration
       title: 'Template App',
       debugShowCheckedModeBanner: false,
 
-      // Translations configuration
+      // Internationalization
       translations: AppTranslations(),
       locale: AppTranslations.getDeviceLocale(),
       fallbackLocale: AppTranslations.fallbackLocale,
-
-      // Localization delegates for flutter_localizations
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -83,65 +62,45 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: AppTranslations.supportedLocales,
 
-      // Theme configuration
+      // Theming
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
 
-      // Navigation configuration
-      initialBinding: InitialBinding(),
+      // Navigation & Dependency Injection
+      initialBinding: InitialBinding(), // ← This handles ALL service initialization!
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
-
-      // Navigation settings
-      enableLog: true,
-      logWriterCallback: _logWriter,
 
       // Default transitions
       defaultTransition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
 
+      // Global wrapper for UI features
+      builder: (context, child) => AppWrapper(child: child),
+
       // Error handling
       unknownRoute: AppPages.routes.last,
-
-      // Builder for global configurations
-      builder: (context, child) {
-        return _AppWrapper(child: child);
-      },
     );
   }
-
-  /// Custom log writer for GetX
-  void _logWriter(String text, {bool isError = false}) {
-    if (isError) {
-      print('🔴 GetX Error: $text');
-    } else {
-      print('🟢 GetX: $text');
-    }
-  }
 }
 
-/// App wrapper to handle global configurations
-class _AppWrapper extends StatefulWidget {
+/// Wrapper for global functionality
+class AppWrapper extends StatefulWidget {
   final Widget? child;
 
-  const _AppWrapper({this.child});
+  const AppWrapper({super.key, this.child});
 
   @override
-  State<_AppWrapper> createState() => _AppWrapperState();
+  State<AppWrapper> createState() => _AppWrapperState();
 }
 
-class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
-  late final ThemeController _themeController;
-  late final LanguageController _languageController;
-  late final ConnectivityController _connectivityController;
-  late final AuthController _authController;
-
+class _AppWrapperState extends State<AppWrapper> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _initializeControllers();
     WidgetsBinding.instance.addObserver(this);
+    // No need to initialize controllers here - InitialBinding handles it!
   }
 
   @override
@@ -150,40 +109,24 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void _initializeControllers() {
-    // Initialize controllers with proper error handling
-    try {
-      _themeController = Get.put(ThemeController(), permanent: true);
-      _languageController = Get.put(LanguageController(), permanent: true);
-      _connectivityController = Get.put(ConnectivityController(), permanent: true);
-      _authController = Get.put(AuthController(), permanent: true);
-
-      print('✅ Controllers initialized successfully');
-    } catch (e) {
-      print('❌ Error initializing controllers: $e');
-    }
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
+    // Handle app lifecycle changes
     switch (state) {
       case AppLifecycleState.resumed:
-      // App is in foreground
-        _connectivityController.checkConnectivity();
+      // App came to foreground - check connectivity
+        if (Get.isRegistered<ConnectivityController>()) {
+          Get.find<ConnectivityController>().checkConnectivity();
+        }
         break;
       case AppLifecycleState.paused:
-      // App is in background
+      // App went to background
         break;
       case AppLifecycleState.inactive:
-      // App is inactive
-        break;
       case AppLifecycleState.detached:
-      // App is detached
-        break;
       case AppLifecycleState.hidden:
-      // App is hidden (Android 14+)
         break;
     }
   }
@@ -192,54 +135,81 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
   void didChangePlatformBrightness() {
     super.didChangePlatformBrightness();
     // Handle system theme changes
-    _themeController.applyTheme();
+    if (Get.isRegistered<ThemeController>()) {
+      final themeController = Get.find<ThemeController>();
+      if (themeController.isSystemMode) {
+        // Theme controller will automatically update
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return MediaQuery(
-        // Apply font scaling from theme controller
-        data: MediaQuery.of(context).copyWith(
-          textScaleFactor: _themeController.getFontSizeScale(),
-        ),
-        child: Directionality(
-          // Apply text direction based on current language
-          textDirection: AppTranslations.getLanguageDirection(
-            _languageController.currentLanguageCode,
-          ),
-          child: Stack(
-            children: [
-              // Main app content
-              widget.child ?? const SizedBox.shrink(),
+    return MediaQuery(
+      // Apply responsive font scaling
+      data: MediaQuery.of(context).copyWith(
+        textScaleFactor: _getFontScale(),
+      ),
+      child: Directionality(
+        // Apply text direction based on current language
+        textDirection: _getTextDirection(),
+        child: Stack(
+          children: [
+            // Main app content
+            widget.child ?? const SizedBox.shrink(),
 
-              // Global overlays
-              _buildConnectivityBanner(),
-            ],
-          ),
+            // Global overlays
+            _buildOfflineBanner(),
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 
-  /// Build connectivity banner for offline state
-  Widget _buildConnectivityBanner() {
-    return Obx(() {
-      if (!_connectivityController.showOfflineBanner) {
-        return const SizedBox.shrink();
+  /// Get font scale factor
+  double _getFontScale() {
+    try {
+      if (Get.isRegistered<ThemeController>()) {
+        // You can add font scaling logic here
+        return 1.0;
       }
+    } catch (e) {
+      // Controller not ready yet
+    }
+    return 1.0;
+  }
 
-      return Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: SafeArea(
-          bottom: false,
-          child: Material(
-            color: Colors.transparent,
+  /// Get text direction based on language
+  TextDirection _getTextDirection() {
+    try {
+      if (Get.isRegistered<LanguageController>()) {
+        final languageController = Get.find<LanguageController>();
+        return AppTranslations.getLanguageDirection(
+          languageController.currentLanguageCode,
+        );
+      }
+    } catch (e) {
+      // Controller not ready yet
+    }
+    return TextDirection.ltr; // Default to LTR
+  }
+
+  /// Offline connection banner
+  Widget _buildOfflineBanner() {
+    return GetBuilder<ConnectivityController>(
+      builder: (controller) {
+        // Show banner only when offline
+        if (controller.isConnected) return const SizedBox.shrink();
+
+        return Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            bottom: false,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: const EdgeInsets.all(8),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.error,
                 borderRadius: BorderRadius.circular(8),
@@ -259,17 +229,17 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
                     size: 20,
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       'No internet connection',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  if (_connectivityController.isRetrying)
+                  if (controller.isRetrying)
                     const SizedBox(
                       width: 16,
                       height: 16,
@@ -280,7 +250,7 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
                     )
                   else
                     TextButton(
-                      onPressed: _connectivityController.retryConnection,
+                      onPressed: controller.retryConnection,
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -293,7 +263,7 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
                       ),
                     ),
                   IconButton(
-                    onPressed: _connectivityController.hideOfflineBanner,
+                    onPressed: controller.hideOfflineBanner,
                     icon: const Icon(
                       Icons.close,
                       color: Colors.white,
@@ -309,8 +279,8 @@ class _AppWrapperState extends State<_AppWrapper> with WidgetsBindingObserver {
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
