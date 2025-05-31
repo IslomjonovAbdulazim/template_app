@@ -23,6 +23,11 @@ class ResponsiveScaffold extends StatelessWidget {
   final Color? backgroundColor;
   final bool extendBody;
   final bool extendBodyBehindAppBar;
+  final bool showBackButton;
+  final VoidCallback? onBackPressed;
+  final String? title;
+  final List<Widget>? actions;
+  final bool centerTitle;
 
   const ResponsiveScaffold({
     super.key,
@@ -40,6 +45,11 @@ class ResponsiveScaffold extends StatelessWidget {
     this.backgroundColor,
     this.extendBody = false,
     this.extendBodyBehindAppBar = false,
+    this.showBackButton = false,
+    this.onBackPressed,
+    this.title,
+    this.actions,
+    this.centerTitle = true,
   });
 
   @override
@@ -48,9 +58,21 @@ class ResponsiveScaffold extends StatelessWidget {
     final bgColor = backgroundColor ??
         (isDark ? DarkColors.background : LightColors.background);
 
+    // Build app bar if title is provided and no custom appBar
+    PreferredSizeWidget? finalAppBar = appBar;
+    if (appBar == null && title != null) {
+      finalAppBar = CustomAppBar(
+        title: title,
+        actions: actions,
+        showBackButton: showBackButton,
+        onBackPressed: onBackPressed,
+        centerTitle: centerTitle,
+      );
+    }
+
     return Scaffold(
       backgroundColor: bgColor,
-      appBar: appBar,
+      appBar: finalAppBar,
       body: Stack(
         children: [
           // Main body
@@ -261,20 +283,16 @@ class PageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffold(
-      appBar: title != null
-          ? CustomAppBar(
-        title: title,
-        actions: actions,
-        showBackButton: showBackButton,
-        onBackPressed: onBackPressed,
-        centerTitle: centerTitle,
-      )
-          : null,
+      title: title,
+      actions: actions,
+      showBackButton: showBackButton,
+      onBackPressed: onBackPressed,
       body: body,
       floatingActionButton: floatingActionButton,
       showConnectivityBanner: showConnectivityBanner,
       isLoading: isLoading,
       loadingMessage: loadingMessage,
+      centerTitle: centerTitle,
     );
   }
 }

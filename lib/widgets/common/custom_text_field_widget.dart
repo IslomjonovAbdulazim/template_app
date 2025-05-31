@@ -27,6 +27,8 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final bool autoFocus;
   final TextCapitalization textCapitalization;
+  final List<String>? autofillHints;
+  final TextInputAction? textInputAction;
 
   const CustomTextField({
     super.key,
@@ -51,6 +53,8 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.autoFocus = false,
     this.textCapitalization = TextCapitalization.none,
+    this.autofillHints,
+    this.textInputAction,
   });
 
   @override
@@ -97,6 +101,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           maxLength: widget.maxLength,
           inputFormatters: widget.inputFormatters,
           textCapitalization: widget.textCapitalization,
+          autofillHints: widget.autofillHints,
+          textInputAction: widget.textInputAction,
           style: AppTextStyles.inputText.copyWith(
             color: isDark ? DarkColors.textPrimary : LightColors.textPrimary,
           ),
@@ -201,14 +207,20 @@ class EmailTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
   final bool enabled;
+  final bool autoFocus;
+  final List<String>? autofillHints;
 
   const EmailTextField({
     super.key,
     this.controller,
     this.validator,
     this.onChanged,
+    this.onSubmitted,
     this.enabled = true,
+    this.autoFocus = false,
+    this.autofillHints,
   });
 
   @override
@@ -221,8 +233,12 @@ class EmailTextField extends StatelessWidget {
       prefixIcon: Icons.email_outlined,
       validator: validator,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
       enabled: enabled,
+      autoFocus: autoFocus,
       textCapitalization: TextCapitalization.none,
+      autofillHints: autofillHints ?? const [AutofillHints.email],
+      textInputAction: TextInputAction.next,
     );
   }
 }
@@ -231,29 +247,122 @@ class PasswordTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
   final String? label;
+  final String? hint;
   final bool enabled;
+  final bool autoFocus;
+  final List<String>? autofillHints;
+  final TextInputAction? textInputAction;
 
   const PasswordTextField({
     super.key,
     this.controller,
     this.validator,
     this.onChanged,
+    this.onSubmitted,
     this.label,
+    this.hint,
     this.enabled = true,
+    this.autoFocus = false,
+    this.autofillHints,
+    this.textInputAction,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomTextField(
       label: label ?? 'password'.tr,
-      hint: 'enter_password'.tr,
+      hint: hint ?? 'enter_password'.tr,
       controller: controller,
       obscureText: true,
       prefixIcon: Icons.lock_outline,
       validator: validator,
       onChanged: onChanged,
+      onSubmitted: onSubmitted,
       enabled: enabled,
+      autoFocus: autoFocus,
+      autofillHints: autofillHints ?? const [AutofillHints.password],
+      textInputAction: textInputAction ?? TextInputAction.done,
+    );
+  }
+}
+
+class NameTextField extends StatelessWidget {
+  final String label;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
+  final bool enabled;
+  final bool autoFocus;
+  final List<String>? autofillHints;
+
+  const NameTextField({
+    super.key,
+    required this.label,
+    this.controller,
+    this.validator,
+    this.onChanged,
+    this.onSubmitted,
+    this.enabled = true,
+    this.autoFocus = false,
+    this.autofillHints,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTextField(
+      label: label,
+      hint: 'enter_$label'.tr.toLowerCase(),
+      controller: controller,
+      keyboardType: TextInputType.name,
+      prefixIcon: Icons.person_outline,
+      validator: validator,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      enabled: enabled,
+      autoFocus: autoFocus,
+      textCapitalization: TextCapitalization.words,
+      autofillHints: autofillHints,
+      textInputAction: TextInputAction.next,
+    );
+  }
+}
+
+class PhoneTextField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
+  final bool enabled;
+  final bool autoFocus;
+
+  const PhoneTextField({
+    super.key,
+    this.controller,
+    this.validator,
+    this.onChanged,
+    this.onSubmitted,
+    this.enabled = true,
+    this.autoFocus = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTextField(
+      label: 'phone'.tr,
+      hint: 'enter_phone'.tr,
+      controller: controller,
+      keyboardType: TextInputType.phone,
+      prefixIcon: Icons.phone_outlined,
+      validator: validator,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      enabled: enabled,
+      autoFocus: autoFocus,
+      autofillHints: const [AutofillHints.telephoneNumber],
+      textInputAction: TextInputAction.next,
     );
   }
 }
@@ -264,6 +373,7 @@ class SearchTextField extends StatelessWidget {
   final Function(String)? onSubmitted;
   final String? hint;
   final bool enabled;
+  final bool autoFocus;
 
   const SearchTextField({
     super.key,
@@ -272,6 +382,7 @@ class SearchTextField extends StatelessWidget {
     this.onSubmitted,
     this.hint,
     this.enabled = true,
+    this.autoFocus = false,
   });
 
   @override
@@ -284,7 +395,50 @@ class SearchTextField extends StatelessWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       enabled: enabled,
+      autoFocus: autoFocus,
       textCapitalization: TextCapitalization.sentences,
+      textInputAction: TextInputAction.search,
+    );
+  }
+}
+
+class OtpTextField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
+  final bool enabled;
+  final bool autoFocus;
+  final int length;
+
+  const OtpTextField({
+    super.key,
+    this.controller,
+    this.validator,
+    this.onChanged,
+    this.onSubmitted,
+    this.enabled = true,
+    this.autoFocus = true,
+    this.length = 6,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTextField(
+      label: 'verification_code'.tr,
+      hint: 'enter_verification_code'.tr,
+      controller: controller,
+      keyboardType: TextInputType.number,
+      prefixIcon: Icons.confirmation_number_outlined,
+      validator: validator,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      enabled: enabled,
+      autoFocus: autoFocus,
+      maxLength: length,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      autofillHints: const [AutofillHints.oneTimeCode],
+      textInputAction: TextInputAction.done,
     );
   }
 }

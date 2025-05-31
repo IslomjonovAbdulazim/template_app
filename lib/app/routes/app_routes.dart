@@ -1,4 +1,3 @@
-// Simple routes
 abstract class Routes {
   Routes._();
 
@@ -7,4 +6,6 @@ abstract class Routes {
   static const LOGIN = '/login';
   static const REGISTER = '/register';
   static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
+  static const VERIFY_EMAIL = '/verify-email';
 }
