@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/controllers/auth_controller.dart';
 import '../../constants/app_colors.dart';
-import '../../constants/app_text_styles.dart';
 import '../../utils/validators.dart';
 import '../../widgets/common/custom_button_widget.dart';
 import '../../widgets/common/custom_text_field_widget.dart';
-import '../../widgets/common/responsive_scaffold.dart';
 
 class LoginView extends GetView<AuthController> {
   LoginView({super.key});
@@ -14,15 +12,10 @@ class LoginView extends GetView<AuthController> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _rememberMe = false.obs;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return PageScaffold(
-      showBackButton: false,
-      showConnectivityBanner: true,
+    return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -31,10 +24,10 @@ class LoginView extends GetView<AuthController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 60),
 
-                // Logo/Header
-                _buildHeader(isDark),
+                // Header
+                _buildHeader(),
                 const SizedBox(height: 48),
 
                 // Email Field
@@ -47,56 +40,60 @@ class LoginView extends GetView<AuthController> {
                 // Password Field
                 PasswordTextField(
                   controller: _passwordController,
-                  validator: Validators.password,
+                  validator: (value) => value?.isEmpty == true ? 'Password is required' : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
-                // Remember Me & Forgot Password
-                _buildOptionsRow(),
-                const SizedBox(height: 32),
+                // Forgot Password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Get.toNamed('/forgot-password'),
+                    child: const Text('Forgot Password?'),
+                  ),
+                ),
+                const SizedBox(height: 24),
 
                 // Login Button
                 Obx(() => CustomButton(
-                  text: 'login_button'.tr,
+                  text: 'Login',
                   onPressed: controller.isLoading ? null : _handleLogin,
                   isLoading: controller.isLoading,
                   type: ButtonType.primary,
                   size: ButtonSize.large,
                 )),
+
                 const SizedBox(height: 24),
 
                 // Error Message
                 Obx(() => controller.hasError
                     ? Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppColors.errorShade,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     controller.authError,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.error,
-                    ),
+                    style: const TextStyle(color: AppColors.error),
                     textAlign: TextAlign.center,
                   ),
                 )
-                    : const SizedBox.shrink(),
-                ),
+                    : const SizedBox.shrink()),
 
                 const SizedBox(height: 32),
-
-                // Divider
-                _buildDivider(isDark),
-                const SizedBox(height: 32),
-
-                // Social Login (Optional)
-                _buildSocialLogin(),
-                const SizedBox(height: 40),
 
                 // Sign Up Link
-                _buildSignUpLink(isDark),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account? "),
+                    TextButton(
+                      onPressed: () => Get.toNamed('/register'),
+                      child: const Text('Sign Up'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -105,10 +102,9 @@ class LoginView extends GetView<AuthController> {
     );
   }
 
-  Widget _buildHeader(bool isDark) {
+  Widget _buildHeader() {
     return Column(
       children: [
-        // App Icon/Logo
         Container(
           width: 80,
           height: 80,
@@ -123,137 +119,22 @@ class LoginView extends GetView<AuthController> {
           ),
         ),
         const SizedBox(height: 24),
-
-        // Welcome Text
-        Text(
-          'welcome_back'.tr,
-          style: AppTextStyles.headlineMedium.copyWith(
-            color: isDark ? DarkColors.textPrimary : LightColors.textPrimary,
-            fontWeight: FontWeight.w700,
+        const Text(
+          'Welcome Back',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-
-        Text(
+        const Text(
           'Sign in to your account',
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: isDark ? DarkColors.textSecondary : LightColors.textSecondary,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey,
           ),
           textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOptionsRow() {
-    return Row(
-      children: [
-        // Remember Me
-        Expanded(
-          child: Obx(() => Row(
-            children: [
-              Checkbox(
-                value: _rememberMe.value,
-                onChanged: (value) => _rememberMe.value = value ?? false,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'remember_me'.tr,
-                  style: AppTextStyles.bodyMedium,
-                ),
-              ),
-            ],
-          )),
-        ),
-
-        // Forgot Password
-        TextButton(
-          onPressed: () => Get.toNamed('/forgot-password'),
-          child: Text(
-            'forgot_password'.tr,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDivider(bool isDark) {
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(
-            color: isDark ? DarkColors.border : LightColors.border,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'or'.tr,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: isDark ? DarkColors.textTertiary : LightColors.textTertiary,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Divider(
-            color: isDark ? DarkColors.border : LightColors.border,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialLogin() {
-    return Column(
-      children: [
-        // Google Login
-        CustomButton(
-          text: 'Continue with Google',
-          onPressed: _handleGoogleLogin,
-          type: ButtonType.secondary,
-          size: ButtonSize.large,
-          icon: Icons.g_mobiledata,
-        ),
-        const SizedBox(height: 12),
-
-        // Apple Login (iOS only - you can add platform check)
-        CustomButton(
-          text: 'Continue with Apple',
-          onPressed: _handleAppleLogin,
-          type: ButtonType.secondary,
-          size: ButtonSize.large,
-          icon: Icons.apple,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSignUpLink(bool isDark) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'no_account'.tr,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: isDark ? DarkColors.textSecondary : LightColors.textSecondary,
-          ),
-        ),
-        TextButton(
-          onPressed: () => Get.toNamed('/register'),
-          child: Text(
-            'sign_up'.tr,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
         ),
       ],
     );
@@ -264,26 +145,7 @@ class LoginView extends GetView<AuthController> {
       controller.login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        rememberMe: _rememberMe.value,
       );
     }
-  }
-
-  void _handleGoogleLogin() {
-    // Implement Google login
-    Get.showSnackbar(GetSnackBar(
-      title: 'Coming Soon',
-      message: 'Google login will be available soon',
-      duration: const Duration(seconds: 2),
-    ));
-  }
-
-  void _handleAppleLogin() {
-    // Implement Apple login
-    Get.showSnackbar(GetSnackBar(
-      title: 'Coming Soon',
-      message: 'Apple login will be available soon',
-      duration: const Duration(seconds: 2),
-    ));
   }
 }
