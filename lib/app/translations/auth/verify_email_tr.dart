@@ -1,4 +1,5 @@
-// Email verification translations
+// Add these translations to your verify_email_tr.dart file
+
 const Map<String, String> verifyEmailEn = {
   'verify_email': 'Verify Email',
   'verification_sent': 'Verification email sent',
@@ -13,6 +14,26 @@ const Map<String, String> verifyEmailEn = {
   'skip_for_now': 'Skip for now',
   'verify_to_continue': 'Please verify your email to continue',
   'check_spam_folder': 'Don\'t see the email? Check your spam folder',
+
+  // Additional translations for the new verification flow
+  'exit_verification': 'Exit Verification',
+  'stay': 'Stay',
+  'exit': 'Exit',
+  'skip_verification': 'Skip Verification',
+  'enter_verification_code': 'Enter the 6-digit code sent to your email',
+  'verification_code_sent': 'Verification code sent to your email',
+  'code_expires_in': 'Code expires in',
+  'minutes': 'minutes',
+  'resend_code_in': 'Resend code in',
+  'seconds': 'seconds',
+  'didnt_receive_code': 'Didn\'t receive the code?',
+  'resend_code': 'Resend Code',
+  'verify_now': 'Verify Now',
+  'verification_successful': 'Email verification successful!',
+  'verification_error': 'Verification failed. Please try again.',
+  'invalid_code': 'Invalid verification code',
+  'code_expired': 'Verification code has expired',
+  'too_many_attempts': 'Too many failed attempts. Please try again later.',
 };
 
 const Map<String, String> verifyEmailRu = {
@@ -29,6 +50,26 @@ const Map<String, String> verifyEmailRu = {
   'skip_for_now': 'Пропустить пока',
   'verify_to_continue': 'Пожалуйста, подтвердите email для продолжения',
   'check_spam_folder': 'Не видите письмо? Проверьте папку спам',
+
+  // Additional translations
+  'exit_verification': 'Выйти из проверки',
+  'stay': 'Остаться',
+  'exit': 'Выйти',
+  'skip_verification': 'Пропустить проверку',
+  'enter_verification_code': 'Введите 6-значный код, отправленный на вашу почту',
+  'verification_code_sent': 'Код подтверждения отправлен на вашу почту',
+  'code_expires_in': 'Код действует еще',
+  'minutes': 'минут',
+  'resend_code_in': 'Отправить код повторно через',
+  'seconds': 'секунд',
+  'didnt_receive_code': 'Не получили код?',
+  'resend_code': 'Отправить повторно',
+  'verify_now': 'Подтвердить сейчас',
+  'verification_successful': 'Email успешно подтвержден!',
+  'verification_error': 'Ошибка подтверждения. Попробуйте снова.',
+  'invalid_code': 'Неверный код подтверждения',
+  'code_expired': 'Код подтверждения истек',
+  'too_many_attempts': 'Слишком много попыток. Попробуйте позже.',
 };
 
 const Map<String, String> verifyEmailUz = {
@@ -45,4 +86,24 @@ const Map<String, String> verifyEmailUz = {
   'skip_for_now': 'Hozircha o\'tkazib yuborish',
   'verify_to_continue': 'Davom etish uchun emailingizni tasdiqlang',
   'check_spam_folder': 'Xatni ko\'rmayapsizmi? Spam papkasini tekshiring',
+
+  // Additional translations
+  'exit_verification': 'Tekshirishdan chiqish',
+  'stay': 'Qolish',
+  'exit': 'Chiqish',
+  'skip_verification': 'Tekshirishni o\'tkazib yuborish',
+  'enter_verification_code': 'Emailingizga yuborilgan 6 raqamli kodni kiriting',
+  'verification_code_sent': 'Tasdiqlash kodi emailingizga yuborildi',
+  'code_expires_in': 'Kod amal qiladi',
+  'minutes': 'daqiqa',
+  'resend_code_in': 'Kodni qayta yuborish',
+  'seconds': 'soniya',
+  'didnt_receive_code': 'Kod kelmaganmi?',
+  'resend_code': 'Qayta yuborish',
+  'verify_now': 'Hoziroq tasdiqlash',
+  'verification_successful': 'Email muvaffaqiyatli tasdiqlandi!',
+  'verification_error': 'Tasdiqlashda xatolik. Qayta urinib ko\'ring.',
+  'invalid_code': 'Noto\'g\'ri tasdiqlash kodi',
+  'code_expired': 'Tasdiqlash kodining muddati tugagan',
+  'too_many_attempts': 'Juda ko\'p urinish. Keyinroq qayta urinib ko\'ring.',
 };

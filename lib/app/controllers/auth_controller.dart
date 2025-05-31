@@ -19,6 +19,14 @@ class AuthController extends GetxController {
   final _isLoading = false.obs;
   final _authError = ''.obs;
 
+  // Email verification specific variables
+  final _isVerificationLoading = false.obs;
+  final _verificationError = ''.obs;
+  final _isResendingCode = false.obs;
+  final _canResendCode = true.obs;
+  final _resendCooldownSeconds = 0.obs;
+  Timer? _resendTimer;
+
   // Stream subscriptions
   StreamSubscription<bool>? _authStateSubscription;
   StreamSubscription<UserModel?>? _userSubscription;
@@ -29,6 +37,13 @@ class AuthController extends GetxController {
   UserModel? get currentUser => _currentUser.value;
   bool get isLoading => _isLoading.value;
   String get authError => _authError.value;
+
+  // Email verification getters
+  bool get isVerificationLoading => _isVerificationLoading.value;
+  String get verificationError => _verificationError.value;
+  bool get isResendingCode => _isResendingCode.value;
+  bool get canResendCode => _canResendCode.value;
+  int get resendCooldownSeconds => _resendCooldownSeconds.value;
 
   // User info getters
   String get userDisplayName => _currentUser.value?.displayName ?? 'Guest';
@@ -48,6 +63,7 @@ class AuthController extends GetxController {
   void onClose() {
     _authStateSubscription?.cancel();
     _userSubscription?.cancel();
+    _resendTimer?.cancel();
     super.onClose();
   }
 
@@ -116,6 +132,11 @@ class AuthController extends GetxController {
 
       if (response.isSuccess) {
         _showSuccess('Login successful!');
+
+        // Check if email verification is required
+        if (_currentUser.value != null && !_currentUser.value!.emailVerified) {
+          Get.toNamed('/verify-email');
+        }
       } else {
         _setError(response.errorMessage);
       }
@@ -149,6 +170,11 @@ class AuthController extends GetxController {
 
       if (response.isSuccess) {
         _showSuccess('Registration successful!');
+
+        // Navigate to email verification if user is not auto-verified
+        if (_currentUser.value != null && !_currentUser.value!.emailVerified) {
+          Get.toNamed('/verify-email');
+        }
       } else {
         _setError(response.errorMessage);
       }
@@ -158,6 +184,124 @@ class AuthController extends GetxController {
     } finally {
       _setLoading(false);
     }
+  }
+
+  /// Verify email with OTP code
+  Future<void> verifyEmail(String otpCode) async {
+    if (_currentUser.value?.email == null) {
+      _setVerificationError('User email not found');
+      return;
+    }
+
+    try {
+      _isVerificationLoading.value = true;
+      _clearVerificationError();
+
+      final response = await _authService.verifyOtp(
+        email: _currentUser.value!.email,
+        otp: otpCode,
+        type: 'email_verification',
+      );
+
+      if (response.isSuccess && response.data != null) {
+        _currentUser.value = response.data;
+        _showSuccess('Email verified successfully!');
+
+        // Navigate to home after successful verification
+        Get.offAllNamed('/home');
+      } else {
+        _setVerificationError(response.errorMessage);
+      }
+    } catch (e) {
+      log('Email verification error: $e');
+      _setVerificationError('Verification failed. Please try again.');
+    } finally {
+      _isVerificationLoading.value = false;
+    }
+  }
+
+  /// Resend verification code
+  Future<void> resendVerificationCode() async {
+    if (_currentUser.value?.email == null) {
+      _setVerificationError('User email not found');
+      return;
+    }
+
+    if (!_canResendCode.value) {
+      _setVerificationError('Please wait before requesting a new code');
+      return;
+    }
+
+    try {
+      _isResendingCode.value = true;
+      _clearVerificationError();
+
+      final response = await _authService.resendOtp(
+        email: _currentUser.value!.email,
+        type: 'email_verification',
+      );
+
+      if (response.isSuccess) {
+        _showSuccess('Verification code sent!');
+        _startResendCooldown();
+      } else {
+        _setVerificationError(response.errorMessage);
+      }
+    } catch (e) {
+      log('Resend verification error: $e');
+      _setVerificationError('Failed to send verification code');
+    } finally {
+      _isResendingCode.value = false;
+    }
+  }
+
+  /// Start resend cooldown timer (60 seconds)
+  void _startResendCooldown() {
+    _canResendCode.value = false;
+    _resendCooldownSeconds.value = 60;
+
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendCooldownSeconds.value > 0) {
+        _resendCooldownSeconds.value--;
+      } else {
+        _canResendCode.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  /// Skip email verification (if allowed)
+  void skipEmailVerification() {
+    Get.dialog(
+      AlertDialog(
+        title: Text('skip_verification'.tr),
+        content: Text('verify_to_continue'.tr),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('cancel'.tr),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+              Get.offAllNamed('/home');
+            },
+            child: Text('skip_for_now'.tr),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Navigate to email verification screen
+  void goToEmailVerification() {
+    Get.toNamed('/verify-email');
+  }
+
+  /// Check if current user needs email verification
+  bool get needsEmailVerification {
+    return _currentUser.value != null && !_currentUser.value!.emailVerified;
   }
 
   /// Logout user
@@ -308,7 +452,12 @@ class AuthController extends GetxController {
 
   /// Navigate to home
   void _navigateToHome() {
-    Get.offAllNamed('/home');
+    // Check if email verification is required
+    if (needsEmailVerification) {
+      Get.offAllNamed('/verify-email');
+    } else {
+      Get.offAllNamed('/home');
+    }
   }
 
   /// Set loading state
@@ -324,6 +473,21 @@ class AuthController extends GetxController {
   /// Clear error
   void _clearError() {
     _authError.value = '';
+  }
+
+  /// Set verification error
+  void _setVerificationError(String error) {
+    _verificationError.value = error;
+  }
+
+  /// Clear verification error
+  void _clearVerificationError() {
+    _verificationError.value = '';
+  }
+
+  /// Clear verification error (public method)
+  void clearVerificationError() {
+    _clearVerificationError();
   }
 
   /// Show success message
@@ -350,6 +514,9 @@ class AuthController extends GetxController {
 
   /// Check if user has error
   bool get hasError => _authError.value.isNotEmpty;
+
+  /// Check if verification has error
+  bool get hasVerificationError => _verificationError.value.isNotEmpty;
 
   /// Get user status summary
   String get userStatusSummary {
